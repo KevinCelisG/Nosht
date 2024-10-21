@@ -4,6 +4,7 @@ import android.app.Activity
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,14 +28,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.korlabs.nosht.R
 import com.korlabs.nosht.domain.model.enums.TypeUserEnum
 import com.korlabs.nosht.navigation.Screen
 import com.korlabs.nosht.presentation.components.button.ButtonCustom
+import com.korlabs.nosht.presentation.components.column.ColumnCustom
 import com.korlabs.nosht.presentation.components.text.TextSubtitleCustom
 import com.korlabs.nosht.presentation.components.text.TextTitleCustom
 import com.korlabs.nosht.presentation.components.text_field.PasswordTextFieldCustom
@@ -66,20 +72,15 @@ fun LoginScreen(
     var checkLogin by rememberSaveable { mutableStateOf(false) }
     var processLogin by rememberSaveable { mutableStateOf(false) }
 
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        TextTitleCustom(title = "Login")
+    ColumnCustom {
+        TextTitleCustom(title = stringResource(id = R.string.login_title))
 
         Spacer(modifier = Modifier.height(20.dp))
 
         TextFieldCustom(
             value = email,
             onValueChange = { email = it },
-            hint = "Ingresa email"
+            hint = stringResource(id = R.string.email_hint)
         )
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -87,12 +88,12 @@ fun LoginScreen(
         PasswordTextFieldCustom(
             value = password,
             onValueChange = { password = it },
-            hint = "Ingresa password"
+            hint = stringResource(id = R.string.password_hint)
         )
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        TextSubtitleCustom(subtitle = "Olvido password", fontColor = Color.White)
+        TextSubtitleCustom(subtitle = stringResource(id = R.string.forgot_password))
 
         Spacer(modifier = Modifier.height(20.dp))
 
@@ -109,19 +110,19 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(30.dp))
 
-        ButtonCustom(text = "Login") {
+        ButtonCustom(text = stringResource(id = R.string.login_title)) {
             checkLogin = true
         }
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        ButtonCustom(text = "SignUp", isSecondary = true) {
+        ButtonCustom(text = stringResource(id = R.string.signup_button), isSecondary = true) {
             navController.navigate(Screen.SignUpScreen(true))
         }
 
         Text(
-            text = "SignUp como empleado",
-            color = Color.White,
+            text = stringResource(id = R.string.signup_as_employee),
+            color = MaterialTheme.colorScheme.onBackground,
             fontSize = 16.sp,
             textAlign = TextAlign.Center,
             modifier = Modifier
@@ -138,8 +139,11 @@ fun LoginScreen(
                     loginViewModel.onEvent(LoginEvent.Login(email, password))
                     processLogin = true
                 } else {
-                    Toast.makeText(context, "You must to fill all the fields", Toast.LENGTH_SHORT)
-                        .show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.fill_all_fields),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
                 checkLogin = false
             }
@@ -161,8 +165,11 @@ fun LoginScreen(
                         navController.navigate(Screen.EmployerHomeScreen)
                     }
                 } else {
-                    Toast.makeText(context, "Email or password incorrect", Toast.LENGTH_SHORT)
-                        .show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.incorrect_email_password),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
                 processLogin = false
             }

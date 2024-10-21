@@ -17,13 +17,16 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.ExposedDropdownMenuDefaults.TrailingIcon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -34,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,6 +46,7 @@ import com.korlabs.nosht.R
 import com.korlabs.nosht.domain.model.ResourceBusiness
 import com.korlabs.nosht.domain.model.enums.TypeResourceEnum
 import com.korlabs.nosht.presentation.components.button.ButtonCustom
+import com.korlabs.nosht.presentation.components.column.ColumnCustom
 import com.korlabs.nosht.presentation.components.resourcesBusiness.ResourceExtendItem
 import com.korlabs.nosht.presentation.components.text_field.TextFieldCustom
 import com.korlabs.nosht.util.Util
@@ -71,17 +76,11 @@ fun ResourcesScreen(
         TypeResourceEnum.COMPANION.type
     )
 
-    Column(
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(20.dp)
-    ) {
+    ColumnCustom {
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
-            text = "Recursos",
+            text = stringResource(id = R.string.resources_title),
             fontSize = 24.sp,
             textAlign = TextAlign.Start,
             modifier = Modifier
@@ -96,7 +95,7 @@ fun ResourcesScreen(
                 .fillMaxHeight(0.8f)
                 .padding(5.dp)
                 .background(
-                    colorResource(R.color.light_gray),
+                    MaterialTheme.colorScheme.surface,
                     shape = RoundedCornerShape(10.dp)
                 )
         ) {
@@ -107,7 +106,7 @@ fun ResourcesScreen(
                 onValueChange = {
 
                 },
-                hint = "Ingresa nombre del recurso"
+                hint = stringResource(id = R.string.enter_resource_name_hint)
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -130,7 +129,7 @@ fun ResourcesScreen(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        ButtonCustom(text = "Agregar nuevo recurso") {
+        ButtonCustom(text = stringResource(id = R.string.add_new_resource)) {
             showDialog = true
         }
 
@@ -138,14 +137,14 @@ fun ResourcesScreen(
             AlertDialog(
                 onDismissRequest = { },
                 title = {
-                    Text(text = "Agregar nuevo recurso", fontSize = 20.sp)
+                    Text(text = stringResource(id = R.string.add_new_resource), fontSize = 20.sp)
                 },
                 text = {
                     Column {
                         TextFieldCustom(
                             value = nameResource,
                             onValueChange = { nameResource = it },
-                            hint = "Ingresa nombre"
+                            hint = stringResource(id = R.string.enter_resource_name_hint)
                         )
 
                         Spacer(modifier = Modifier.height(20.dp))
@@ -158,7 +157,7 @@ fun ResourcesScreen(
                                 readOnly = true,
                                 value = selectedTypeResource.type,
                                 onValueChange = { },
-                                label = { Text("Select type of resource") },
+                                label = { Text(stringResource(id = R.string.select_type_of_resource)) },
                                 trailingIcon = {
                                     TrailingIcon(
                                         expanded = expanded
@@ -189,18 +188,24 @@ fun ResourcesScreen(
                 },
                 confirmButton = {
                     Button(
-                        onClick = {
-                            addResource = true
-                        }
+                        onClick = { addResource = true },
+                        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
                     ) {
-                        Text("Agregar")
+                        Text(
+                            stringResource(id = R.string.add_button),
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
                     }
                 },
                 dismissButton = {
                     Button(
-                        onClick = { showDialog = false }
+                        onClick = { showDialog = false },
+                        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.secondary)
                     ) {
-                        Text("Cancelar")
+                        Text(
+                            stringResource(id = R.string.cancel_button),
+                            color = MaterialTheme.colorScheme.onSecondary
+                        )
                     }
                 }
             )
@@ -220,7 +225,11 @@ fun ResourcesScreen(
                 )
                 processAddResource = true
             } else {
-                Toast.makeText(context, "You must to fill all the fields", Toast.LENGTH_SHORT)
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.fill_all_fields),
+                    Toast.LENGTH_SHORT
+                )
                     .show()
             }
             addResource = false
@@ -230,9 +239,17 @@ fun ResourcesScreen(
     LaunchedEffect(key1 = state.resourceBusiness, block = {
         if (processAddResource) {
             if (state.resourceBusiness != null) {
-                Toast.makeText(context, "Recurso agregado exitosamente", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.resource_added_successfully),
+                    Toast.LENGTH_SHORT
+                ).show()
             } else {
-                Toast.makeText(context, "Error adding resource", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.error_adding_resource),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
             showDialog = false
             processAddResource = false

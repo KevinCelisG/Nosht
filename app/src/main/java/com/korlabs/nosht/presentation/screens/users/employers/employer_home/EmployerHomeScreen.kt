@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -44,6 +46,7 @@ import com.korlabs.nosht.domain.model.enums.employee.EmployerStatusEnum
 import com.korlabs.nosht.domain.model.enums.employee.TypeEmployeeRoleEnum
 import com.korlabs.nosht.navigation.Screen
 import com.korlabs.nosht.presentation.components.button.ButtonCustom
+import com.korlabs.nosht.presentation.components.column.ColumnCustom
 import com.korlabs.nosht.presentation.components.text.TextSubtitleCustom
 import com.korlabs.nosht.presentation.components.text_field.TextFieldCustom
 import com.korlabs.nosht.presentation.screens.users.general.contracts.ContractsEvent
@@ -68,17 +71,11 @@ fun EmployerHomeScreen(
 
     val state = contractsViewModel.state
 
-    Column(
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(20.dp)
-    ) {
+    ColumnCustom {
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
-            text = "Contracts",
+            text = stringResource(id = R.string.contracts_title),
             fontSize = 24.sp,
             textAlign = TextAlign.Start,
             modifier = Modifier
@@ -93,7 +90,7 @@ fun EmployerHomeScreen(
                 .fillMaxHeight(0.8f)
                 .padding(5.dp)
                 .background(
-                    colorResource(R.color.light_gray),
+                    MaterialTheme.colorScheme.surface,
                     shape = RoundedCornerShape(10.dp)
                 )
         ) {
@@ -104,7 +101,7 @@ fun EmployerHomeScreen(
                 onValueChange = {
 
                 },
-                hint = "Ingresa contrato"
+                hint = stringResource(id = R.string.enter_contract)
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -142,7 +139,7 @@ fun EmployerHomeScreen(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        ButtonCustom(text = "Join to a business") {
+        ButtonCustom(text = stringResource(id = R.string.join_to_business)) {
             launchJoinBusinessDialog = true
         }
 
@@ -152,7 +149,7 @@ fun EmployerHomeScreen(
             AlertDialog(
                 onDismissRequest = { },
                 title = {
-                    Text(text = "Join to business", fontSize = 20.sp)
+                    Text(text = stringResource(id = R.string.join_to_business), fontSize = 20.sp)
                 },
                 text = {
                     OutlinedTextField(
@@ -162,7 +159,7 @@ fun EmployerHomeScreen(
                             .fillMaxWidth()
                             .padding(start = 30.dp, end = 30.dp),
                         placeholder = {
-                            Text(text = "Ingresa codigo restaurante")
+                            Text(text = stringResource(id = R.string.enter_restaurant_code))
                         },
                         singleLine = true,
                         shape = RoundedCornerShape(8.dp),
@@ -175,14 +172,14 @@ fun EmployerHomeScreen(
                             reviewCodeBusiness = true
                         }
                     ) {
-                        Text("Agregar")
+                        Text(stringResource(id = R.string.add))
                     }
                 },
                 dismissButton = {
                     Button(
                         onClick = { launchJoinBusinessDialog = false }
                     ) {
-                        Text("Cancelar")
+                        Text(stringResource(id = R.string.cancel))
                     }
                 }
             )
@@ -194,8 +191,11 @@ fun EmployerHomeScreen(
                     contractsViewModel.onEvent(ContractsEvent.ValidateCode(codeBusiness))
                     processCodeBusiness = true
                 } else {
-                    Toast.makeText(context, "You must to fill the field", Toast.LENGTH_SHORT)
-                        .show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.fill_all_fields),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
                 reviewCodeBusiness = false
             }
@@ -207,11 +207,15 @@ fun EmployerHomeScreen(
                     if (state.isTakenCode) {
                         //tablesViewModel.onEvent(TablesEvent.GetRemoteTables)
 
-                        Toast.makeText(context, "Joined successfully", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.joined_successfully),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     } else {
                         Toast.makeText(
                             context,
-                            "Error joining to business, request other code",
+                            context.getString(R.string.joined_successfully),
                             Toast.LENGTH_SHORT
                         ).show()
                     }
@@ -259,9 +263,6 @@ fun ContractItem(
                 onClick(contract)
             }
     ) {
-        TextSubtitleCustom(
-            subtitle = "${contract.status} - ${contract.userUid}",
-            fontColor = Color.White
-        )
+        TextSubtitleCustom(subtitle = "${contract.status} - ${contract.userUid}")
     }
 }

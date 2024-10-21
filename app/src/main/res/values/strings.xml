@@ -1,3 +1,90 @@
 <resources>
     <string name="app_name">Nosht</string>
+
+    <!-- Login -->
+    <string name="login_title">Iniciar sesión</string>
+    <string name="email_hint">Ingresa tu email</string>
+    <string name="password_hint">Ingresa tu contraseña</string>
+    <string name="forgot_password">Olvidé mi contraseña</string>
+    <string name="signup_button">Registrarse</string>
+    <string name="signup_as_employee">Registrarse como empleado</string>
+    <string name="fill_all_fields">Debes completar todos los campos</string>
+    <string name="incorrect_email_password">Email o contraseña incorrectos</string>
+
+    <!-- Registration -->
+    <string name="sign_up_title_business">Registro de Restaurante</string>
+    <string name="sign_up_title_employer">Registro de Empleado</string>
+    <string name="hint_name">Ingresa nombre</string>
+    <string name="hint_last_name">Ingresa apellido</string>
+    <string name="hint_phone">Ingresa celular</string>
+    <string name="hint_email">Ingresa email</string>
+    <string name="hint_password">Ingresa contraseña</string>
+    <string name="hint_password_confirm">Confirma la contraseña</string>
+    <string name="sign_up_button">Registrarse</string>
+    <string name="passwords_do_not_match">Las contraseñas no coinciden</string>
+    <string name="sign_up_successful">Registro exitoso</string>
+    <string name="sign_up_failed">Registro fallido</string>
+
+    <!-- Menu -->
+    <string name="add_menu">Agregar menú</string>
+    <string name="menu_title">Menú</string>
+    <string name="cancel">Cancelar</string>
+    <string name="add">Agregar</string>
+    <string name="confirm">Confirmar</string>
+    <string name="add_new_menu">Agregar nuevo menú</string>
+    <string name="add_static_menu">Agregar menú estatico</string>
+    <string name="add_dynamic_menu">Agregar menú dinamico</string>
+    <string name="enter_menu_name">Ingresa nombre del menú</string>
+    <string name="enter_menu_price">Ingresa precio del menú</string>
+    <string name="menu_added_successfully">Menú agregado exitosamente</string>
+    <string name="error_adding_menu">Error al agregar el menú</string>
+    <string name="static_menu_limit_warning">Es un menú estático, no puedes agregar más de un elemento del mismo tipo</string>
+
+    <!-- Recursos -->
+    <string name="resources_title">Recursos</string>
+    <string name="enter_resource_name_hint">Ingresa nombre del recurso</string>
+    <string name="add_new_resource">Agregar nuevo recurso</string>
+    <string name="enter_name_hint">Ingresa nombre del recurso</string>
+    <string name="select_type_of_resource">Seleccionar tipo de recurso</string>
+    <string name="add_button">Agregar</string>
+    <string name="cancel_button">Cancelar</string>
+    <string name="resource_added_successfully">Recurso agregado exitosamente</string>
+    <string name="error_adding_resource">Error al agregar el recurso</string>
+
+    <!-- Tables -->
+    <string name="tables_title">Mesas</string>
+    <string name="enter_table_name_hint">Ingresa nombre de la mesa</string>
+    <string name="orders_to_table">Pedidos a %1$s</string>
+    <string name="items">Artículos</string>
+    <string name="add_new_customer">Agregar nuevo cliente</string>
+    <string name="table_added_successfully">Mesa agregada exitosamente</string>
+    <string name="error_adding_table">Error al agregar mesa</string>
+    <string name="add_new_table">Agregar nueva mesa</string>
+
+    <!-- Admin Home -->
+    <string name="dashboard_title">Dashboard</string>
+
+    <!-- Employers Screen -->
+    <string name="employers_title">Empleados</string>
+    <string name="add_employer">Agregar Empleado</string>
+    <string name="add_new_employer">Agregar Nuevo Empleado</string>
+    <string name="select_employer_role">Seleccionar Rol de Empleado</string>
+    <string name="enter_employee_name">Ingresa Nombre del Empleado</string>
+    <string name="timer_finished">El temporizador ha terminado</string>
+    <string name="cancel_timer">Cancelar Temporizador</string>
+    <string name="count_down_code">Código de Cuenta Regresiva</string>
+    <string name="code_successful">Código exitoso %1$s</string>
+    <string name="error_adding_employer">Error al agregar empleado</string>
+    <string name="employer_joined_successfully">Empleado agregado con éxito</string>
+    <string name="employer_taken_error">Empleado ya tomado, pero hay un error. Raro :(</string>
+
+    <!-- Contracts Screen -->
+    <string name="contracts_title">Contracts</string>
+    <string name="enter_contract">Ingresa contrato</string>
+    <string name="join_to_business">Unirse a un negocio</string>
+    <string name="join_business_dialog_title">Unirse a un negocio</string>
+    <string name="enter_restaurant_code">Ingresa código del restaurante</string>
+    <string name="joined_successfully">Unido con éxito</string>
+    <string name="error_joining_business">Error al unirse al negocio, solicita otro código</string>
+    <string name="new_remote_contracts">Hay nuevos datos de contratos remotos</string>
 </resources>

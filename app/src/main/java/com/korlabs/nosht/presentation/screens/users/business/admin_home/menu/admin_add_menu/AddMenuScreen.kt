@@ -23,6 +23,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -49,8 +51,10 @@ import com.korlabs.nosht.domain.model.ResourceBusiness
 import com.korlabs.nosht.domain.model.enums.MenuStatusEnum
 import com.korlabs.nosht.domain.model.enums.TypeResourceEnum
 import com.korlabs.nosht.navigation.Screen
+import com.korlabs.nosht.presentation.components.column.ColumnCustom
 import com.korlabs.nosht.presentation.components.resourcesBusiness.ResourceExtendItem
 import com.korlabs.nosht.presentation.components.resourcesBusiness.TypeResourceItem
+import com.korlabs.nosht.presentation.components.text.TextButtonCustom
 import com.korlabs.nosht.presentation.components.text.TextSubtitleCustom
 import com.korlabs.nosht.presentation.components.text_field.TextFieldCustom
 import com.korlabs.nosht.presentation.screens.users.business.admin_home.menu.MenuEvent
@@ -90,17 +94,11 @@ fun AddMenuScreen(
         TypeResourceEnum.COMMERCIAL_PRODUCTS
     )
 
-    Column(
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(20.dp)
-    ) {
+    ColumnCustom {
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
-            text = "Agregar menu",
+            text = stringResource(R.string.menu_title),
             fontSize = 24.sp,
             textAlign = TextAlign.Start,
             overflow = TextOverflow.Ellipsis,
@@ -117,7 +115,7 @@ fun AddMenuScreen(
                 .fillMaxHeight(0.8f)
                 .padding(5.dp)
                 .background(
-                    colorResource(R.color.light_gray),
+                    MaterialTheme.colorScheme.surface,
                     shape = RoundedCornerShape(10.dp)
                 )
         ) {
@@ -161,7 +159,7 @@ fun AddMenuScreen(
                                 if (listResourceItemsSelected.any { resource -> resource.typeResourceEnum == resourceBusiness.typeResourceEnum }) {
                                     Toast.makeText(
                                         context,
-                                        "In a static menus can't add more than 1 type element",
+                                        context.getString(R.string.static_menu_limit_warning),
                                         Toast.LENGTH_SHORT
                                     )
                                         .show()
@@ -192,30 +190,28 @@ fun AddMenuScreen(
                     listResourceItemsSelected.clear()
                     navController.navigateUp()
                 },
-                modifier = Modifier
-                    .weight(1f)
-                    .background(
-                        color = colorResource(id = R.color.dark_red),
-                        shape = RoundedCornerShape(20.dp)
-                    ),
-                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.dark_red))
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.secondary),
+                shape = RoundedCornerShape(20.dp)
             ) {
-                TextSubtitleCustom(subtitle = "Cancel", fontColor = Color.White)
+                TextButtonCustom(
+                    subtitle = stringResource(id = R.string.cancel),
+                    isSecondary = true
+                )
             }
 
             Spacer(modifier = Modifier.width(20.dp))
 
             Button(
                 onClick = { showDialog = true },
-                modifier = Modifier
-                    .weight(1f)
-                    .background(
-                        color = colorResource(id = R.color.dark_blue),
-                        shape = RoundedCornerShape(20.dp)
-                    ),
-                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.dark_blue))
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
+                shape = RoundedCornerShape(20.dp)
             ) {
-                TextSubtitleCustom(subtitle = "Confirm", fontColor = Color.White)
+                TextButtonCustom(
+                    subtitle = stringResource(R.string.confirm),
+                    isSecondary = false
+                )
             }
         }
 
@@ -223,14 +219,14 @@ fun AddMenuScreen(
             AlertDialog(
                 onDismissRequest = { },
                 title = {
-                    Text(text = "Agregar nuevo Menu", fontSize = 20.sp)
+                    Text(text = stringResource(id = R.string.add_new_menu), fontSize = 20.sp)
                 },
                 text = {
                     Column {
                         TextFieldCustom(
                             value = nameMenu,
                             onValueChange = { nameMenu = it },
-                            hint = "Ingresa nombre del menu"
+                            hint = stringResource(id = R.string.enter_menu_name)
                         )
 
                         OutlinedTextField(
@@ -240,7 +236,7 @@ fun AddMenuScreen(
                                 .fillMaxWidth()
                                 .padding(start = 30.dp, end = 30.dp),
                             placeholder = {
-                                Text(text = "Ingresa precio del menu")
+                                Text(text = stringResource(id = R.string.enter_menu_price))
                             },
                             singleLine = true,
                             shape = RoundedCornerShape(8.dp),
@@ -254,14 +250,14 @@ fun AddMenuScreen(
                             addMenu = true
                         }
                     ) {
-                        Text("Agregar")
+                        Text(stringResource(id = R.string.add_menu))
                     }
                 },
                 dismissButton = {
                     Button(
                         onClick = { showDialog = false }
                     ) {
-                        Text("Cancelar")
+                        Text(stringResource(id = R.string.cancel))
                     }
                 }
             )
@@ -284,8 +280,11 @@ fun AddMenuScreen(
                 )
                 processAddMenu = true
             } else {
-                Toast.makeText(context, "You must to fill all the fields", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.fill_all_fields),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
             addMenu = false
         }
@@ -294,9 +293,17 @@ fun AddMenuScreen(
     LaunchedEffect(key1 = stateMenu.menu, block = {
         if (processAddMenu) {
             if (stateMenu.menu != null) {
-                Toast.makeText(context, "Menu agregado exitosamente", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.menu_added_successfully),
+                    Toast.LENGTH_SHORT
+                ).show()
             } else {
-                Toast.makeText(context, "Error adding menu", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.error_adding_menu),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
             showDialog = false
             processAddMenu = false

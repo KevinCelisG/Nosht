@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,14 +28,14 @@ fun TimerDisplay(timeLeft: Int) {
         modifier = Modifier
             .fillMaxWidth(0.5f)
             .padding(10.dp)
-            .background(Color.White, shape = RoundedCornerShape(8.dp)),
+            .background(MaterialTheme.colorScheme.background, shape = RoundedCornerShape(8.dp)),
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = timerText,
             fontSize = 32.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Black,
+            color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
                 .padding(5.dp)
         )

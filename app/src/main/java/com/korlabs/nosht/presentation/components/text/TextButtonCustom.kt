@@ -6,21 +6,22 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun TextTitleCustom(title: String) {
+fun TextButtonCustom(subtitle: String, isSecondary: Boolean) {
+    val fontColor = if (isSecondary) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onPrimary
+
     Text(
-        text = title,
-        fontSize = 24.sp,
-        fontWeight = FontWeight.Bold,
+        text = subtitle,
+        color = fontColor,
+        fontSize = 16.sp,
         textAlign = TextAlign.Center,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(20.dp),
-        color = MaterialTheme.colorScheme.onBackground
+            .padding(10.dp)
     )
 }

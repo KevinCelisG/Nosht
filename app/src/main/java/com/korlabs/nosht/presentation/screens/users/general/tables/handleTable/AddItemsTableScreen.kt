@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -32,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -41,10 +43,12 @@ import com.korlabs.nosht.R
 import com.korlabs.nosht.domain.model.enums.TypeResourceEnum
 import com.korlabs.nosht.domain.model.enums.TypeTableItemsEnum
 import com.korlabs.nosht.navigation.Screen
+import com.korlabs.nosht.presentation.components.column.ColumnCustom
 import com.korlabs.nosht.presentation.components.menu.MenuExtendItem
 import com.korlabs.nosht.presentation.components.resourcesBusiness.ResourceExtendItem
 import com.korlabs.nosht.presentation.components.resourcesBusiness.ResourceItem
 import com.korlabs.nosht.presentation.components.tables.TypeTableItem
+import com.korlabs.nosht.presentation.components.text.TextButtonCustom
 import com.korlabs.nosht.presentation.components.text.TextSubtitleCustom
 import com.korlabs.nosht.presentation.screens.users.business.admin_home.menu.MenuEvent
 import com.korlabs.nosht.presentation.screens.users.business.admin_home.menu.MenuViewModel
@@ -84,17 +88,11 @@ fun AddItemsTableScreen(
         TypeTableItemsEnum.COMMERCIAL_PRODUCTS
     )
 
-    Column(
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(20.dp)
-    ) {
+    ColumnCustom {
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
-            text = "Orders to $tableName",
+            text = stringResource(id = R.string.orders_to_table, tableName),
             fontSize = 24.sp,
             textAlign = TextAlign.Start,
             overflow = TextOverflow.Ellipsis,
@@ -111,7 +109,7 @@ fun AddItemsTableScreen(
                 .fillMaxHeight(0.8f)
                 .padding(5.dp)
                 .background(
-                    colorResource(R.color.light_gray),
+                    MaterialTheme.colorScheme.surface,
                     shape = RoundedCornerShape(10.dp)
                 )
         ) {
@@ -236,30 +234,22 @@ fun AddItemsTableScreen(
         ) {
             Button(
                 onClick = {},
-                modifier = Modifier
-                    .weight(1f)
-                    .background(
-                        color = colorResource(id = R.color.dark_red),
-                        shape = RoundedCornerShape(20.dp)
-                    ),
-                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.dark_red))
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.secondary),
+                shape = RoundedCornerShape(20.dp)
             ) {
-                TextSubtitleCustom(subtitle = "Cancelar", fontColor = Color.White)
+                TextButtonCustom(subtitle = stringResource(R.string.cancel), isSecondary = true)
             }
 
             Spacer(modifier = Modifier.width(20.dp))
 
             Button(
                 onClick = {},
-                modifier = Modifier
-                    .weight(1f)
-                    .background(
-                        color = colorResource(id = R.color.dark_blue),
-                        shape = RoundedCornerShape(20.dp)
-                    ),
-                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.dark_blue))
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
+                shape = RoundedCornerShape(20.dp)
             ) {
-                TextSubtitleCustom(subtitle = "Confirm", fontColor = Color.White)
+                TextButtonCustom(subtitle = stringResource(R.string.confirm), isSecondary = false)
             }
         }
     }
@@ -270,8 +260,11 @@ fun AddItemsTableScreen(
                 //tablesViewModel.onEvent(TablesEvent.Add(Table(nameTable)))
                 processAddTable = true
             } else {
-                Toast.makeText(context, "You must to fill all the fields", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.fill_all_fields),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
             addTable = false
         }

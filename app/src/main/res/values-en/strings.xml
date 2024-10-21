@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Nosht</string>
+
+    <!-- Login -->
+    <string name="login_title">Login</string>
+    <string name="email_hint">Enter your email</string>
+    <string name="password_hint">Enter your password</string>
+    <string name="forgot_password">Forgot my password</string>
+    <string name="signup_button">Sign up</string>
+    <string name="signup_as_employee">Sign up as employee</string>
+    <string name="fill_all_fields">You must fill in all the fields</string>
+    <string name="incorrect_email_password">Incorrect email or password</string>
+
+    <!-- Registration -->
+    <string name="sign_up_title_business">Restaurant Registration</string>
+    <string name="sign_up_title_employer">Employee Registration</string>
+    <string name="hint_name">Enter first name</string>
+    <string name="hint_last_name">Enter last name</string>
+    <string name="hint_phone">Enter phone number</string>
+    <string name="hint_email">Enter email</string>
+    <string name="hint_password">Enter password</string>
+    <string name="hint_password_confirm">Confirm password</string>
+    <string name="sign_up_button">Sign up</string>
+    <string name="passwords_do_not_match">Passwords do not match</string>
+    <string name="sign_up_successful">Sign up successful</string>
+    <string name="sign_up_failed">Sign up failed</string>
+
+    <!-- Menu -->
+    <string name="add_menu">Add menu</string>
+    <string name="menu_title">Menu</string>
+    <string name="cancel">Cancel</string>
+    <string name="add">Add</string>
+    <string name="confirm">Confirm</string>
+    <string name="add_new_menu">Add new menu</string>
+    <string name="add_static_menu">Add static menu</string>
+    <string name="add_dynamic_menu">Add dynamic menu</string>
+    <string name="enter_menu_name">Enter menu name</string>
+    <string name="enter_menu_price">Enter menu price</string>
+    <string name="menu_added_successfully">Menu added successfully</string>
+    <string name="error_adding_menu">Error adding menu</string>
+    <string name="static_menu_limit_warning">It is a static menu, you cannot add more than one item of the same type</string>
+
+    <!-- Resources -->
+    <string name="resources_title">Resources</string>
+    <string name="enter_resource_name_hint">Enter resource name</string>
+    <string name="add_new_resource">Add new resource</string>
+    <string name="enter_name_hint">Enter resource name</string>
+    <string name="select_type_of_resource">Select type of resource</string>
+    <string name="add_button">Add</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="resource_added_successfully">Resource added successfully</string>
+    <string name="error_adding_resource">Error adding resource</string>
+
+    <!-- Tables -->
+    <string name="tables_title">Tables</string>
+    <string name="enter_table_name_hint">Enter table name</string>
+    <string name="orders_to_table">Orders to %1$s</string>
+    <string name="items">Items</string>
+    <string name="add_new_customer">Add new customer</string>
+    <string name="table_added_successfully">Table added successfully</string>
+    <string name="error_adding_table">Error adding table</string>
+    <string name="add_new_table">Add new table</string>
+
+    <!-- Admin Home -->
+    <string name="dashboard_title">Dashboard</string>
+
+    <!-- Employers screen -->
+    <string name="employers_title">Employers</string>
+    <string name="add_employer">Add Employer</string>
+    <string name="add_new_employer">Add New Employer</string>
+    <string name="select_employer_role">Select Employer Role</string>
+    <string name="enter_employee_name">Enter Employee Name</string>
+    <string name="timer_finished">Timer finished</string>
+    <string name="cancel_timer">Cancel Timer</string>
+    <string name="count_down_code">Count Down Code</string>
+    <string name="code_successful">Code successful %1$s</string>
+    <string name="error_adding_employer">Error adding employer</string>
+    <string name="employer_joined_successfully">Employer joined successfully</string>
+    <string name="employer_taken_error">Employer taken but there is an error. Weird :(</string>
+
+    <!-- Contracts Screen -->
+    <string name="contracts_title">Contracts</string>
+    <string name="enter_contract">Enter contract</string>
+    <string name="join_to_business">Join a business</string>
+    <string name="join_business_dialog_title">Join a business</string>
+    <string name="enter_restaurant_code">Enter restaurant code</string>
+    <string name="joined_successfully">Joined successfully</string>
+    <string name="error_joining_business">Error joining the business, request another code</string>
+    <string name="new_remote_contracts">There is new remote contract data</string>
+</resources>

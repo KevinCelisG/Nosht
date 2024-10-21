@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,6 +40,7 @@ import androidx.navigation.NavHostController
 import com.korlabs.nosht.R
 import com.korlabs.nosht.navigation.Screen
 import com.korlabs.nosht.presentation.components.button.ButtonCustom
+import com.korlabs.nosht.presentation.components.column.ColumnCustom
 import com.korlabs.nosht.presentation.components.menu.MenuExtendItem
 import com.korlabs.nosht.presentation.components.menu.MenuItem
 import com.korlabs.nosht.presentation.components.tables.TableExtendItem
@@ -55,17 +58,11 @@ fun MenuScreen(
 
     val state = menuViewModel.state
 
-    Column(
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(20.dp)
-    ) {
+    ColumnCustom {
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
-            text = "Menu",
+            text = stringResource(id = R.string.menu_title),
             fontSize = 24.sp,
             textAlign = TextAlign.Start,
             modifier = Modifier
@@ -80,7 +77,7 @@ fun MenuScreen(
                 .fillMaxHeight(0.8f)
                 .padding(5.dp)
                 .background(
-                    colorResource(R.color.light_gray),
+                    MaterialTheme.colorScheme.surface,
                     shape = RoundedCornerShape(10.dp)
                 )
         ) {
@@ -91,7 +88,7 @@ fun MenuScreen(
                 onValueChange = {
 
                 },
-                hint = "Ingresa nombre del menu"
+                hint = stringResource(id = R.string.enter_menu_name)
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -126,20 +123,14 @@ fun MenuScreen(
                 .fillMaxWidth()
         ) {
             Button(
-                onClick = {
-                    navHostController.navigate(Screen.AddMenuScreen(false))
-                },
-                modifier = Modifier
-                    .weight(1f)
-                    .background(
-                        color = colorResource(id = R.color.dark_red),
-                        shape = RoundedCornerShape(20.dp)
-                    ),
-                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.dark_red))
+                onClick = { navHostController.navigate(Screen.AddMenuScreen(false)) },
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.secondary),
+                shape = RoundedCornerShape(20.dp)
             ) {
                 Text(
-                    text = "Agregar menu estatico",
-                    color = Color.White,
+                    text = stringResource(id = R.string.add_static_menu),
+                    color = MaterialTheme.colorScheme.onSecondary,
                     fontSize = 16.sp,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
@@ -151,20 +142,14 @@ fun MenuScreen(
             Spacer(modifier = Modifier.width(20.dp))
 
             Button(
-                onClick = {
-                    navHostController.navigate(Screen.AddMenuScreen(true))
-                },
-                modifier = Modifier
-                    .weight(1f)
-                    .background(
-                        color = colorResource(id = R.color.dark_blue),
-                        shape = RoundedCornerShape(20.dp)
-                    ),
-                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.dark_blue))
+                onClick = { navHostController.navigate(Screen.AddMenuScreen(true)) },
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
+                shape = RoundedCornerShape(20.dp)
             ) {
                 Text(
-                    text = "Agregar menu dinamico",
-                    color = Color.White,
+                    text = stringResource(id = R.string.add_dynamic_menu),
+                    color = MaterialTheme.colorScheme.onPrimary,
                     fontSize = 16.sp,
                     textAlign = TextAlign.Center,
                     modifier = Modifier

@@ -3,6 +3,7 @@ package com.korlabs.nosht.presentation.screens.auth.sign_up
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -21,13 +23,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.korlabs.nosht.R
 import com.korlabs.nosht.data.remote.model.UserSignUp
 import com.korlabs.nosht.domain.model.enums.TypeUserEnum
 import com.korlabs.nosht.navigation.Screen
 import com.korlabs.nosht.presentation.components.button.ButtonCustom
+import com.korlabs.nosht.presentation.components.column.ColumnCustom
 import com.korlabs.nosht.presentation.components.text.TextTitleCustom
 import com.korlabs.nosht.presentation.components.text_field.PasswordTextFieldCustom
 import com.korlabs.nosht.presentation.components.text_field.TextFieldCustom
@@ -53,19 +58,15 @@ fun SignUpScreen(
     var checkSignUp by rememberSaveable { mutableStateOf(false) }
     var processSignUp by rememberSaveable { mutableStateOf(false) }
 
-    var title = "Restaurante SignUp"
+    val title = stringResource(
+        if (!args.isBusiness) {
+            R.string.sign_up_title_employer
+        } else {
+            R.string.sign_up_title_business
+        }
+    )
 
-    if (!args.isBusiness) {
-        title = "Employer SignUp"
-    }
-
-    Column(
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(10.dp)
-    ) {
+    ColumnCustom {
         Spacer(modifier = Modifier.height(20.dp))
 
         TextTitleCustom(title = title)
@@ -75,7 +76,7 @@ fun SignUpScreen(
         TextFieldCustom(
             value = name,
             onValueChange = { name = it },
-            hint = "Ingresa nombre"
+            hint = stringResource(id = R.string.hint_name)
         )
 
         if (!args.isBusiness) {
@@ -84,7 +85,7 @@ fun SignUpScreen(
             TextFieldCustom(
                 value = lastName,
                 onValueChange = { lastName = it },
-                hint = "Ingresa apellido"
+                hint = stringResource(id = R.string.hint_last_name)
             )
         }
 
@@ -93,7 +94,7 @@ fun SignUpScreen(
         TextFieldCustom(
             value = phone,
             onValueChange = { phone = it },
-            hint = "Ingresa celular"
+            hint = stringResource(id = R.string.hint_phone)
         )
 
         Spacer(modifier = Modifier.height(10.dp))
@@ -101,7 +102,7 @@ fun SignUpScreen(
         TextFieldCustom(
             value = email,
             onValueChange = { email = it },
-            hint = "Ingresa email"
+            hint = stringResource(id = R.string.email_hint)
         )
 
         Spacer(modifier = Modifier.height(10.dp))
@@ -109,7 +110,7 @@ fun SignUpScreen(
         PasswordTextFieldCustom(
             value = password,
             onValueChange = { password = it },
-            hint = "Ingresa password"
+            hint = stringResource(id = R.string.hint_password)
         )
 
         Spacer(modifier = Modifier.height(10.dp))
@@ -117,7 +118,7 @@ fun SignUpScreen(
         PasswordTextFieldCustom(
             value = passwordConfirm,
             onValueChange = { passwordConfirm = it },
-            hint = "Confirm password"
+            hint = stringResource(id = R.string.hint_password_confirm)
         )
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -135,7 +136,7 @@ fun SignUpScreen(
 
         Spacer(modifier = Modifier.height(30.dp))
 
-        ButtonCustom(text = "SignUp") {
+        ButtonCustom(text = stringResource(id = R.string.sign_up_button)) {
             checkSignUp = true
         }
     }
@@ -158,11 +159,18 @@ fun SignUpScreen(
                     )
                     processSignUp = true
                 } else {
-                    Toast.makeText(context, "Passwords do not match", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.passwords_do_not_match),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             } else {
-                Toast.makeText(context, "You must to fill all the fields", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.fill_all_fields),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
             checkSignUp = false
         }
@@ -171,10 +179,18 @@ fun SignUpScreen(
     LaunchedEffect(key1 = state.isSuccessfulSignUP, block = {
         if (processSignUp) {
             if (state.isSuccessfulSignUP) {
-                Toast.makeText(context, "SignUp successful", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.sign_up_successful),
+                    Toast.LENGTH_SHORT
+                ).show()
                 navHostController.navigateUp()
             } else {
-                Toast.makeText(context, "SignUp failed", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.sign_up_failed),
+                    Toast.LENGTH_SHORT
+                ).show()
                 Log.d(Util.TAG, "Failed in the screen, so weird. ${viewModel.state}")
             }
             processSignUp = false

@@ -28,6 +28,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.ExposedDropdownMenuDefaults.TrailingIcon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -44,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -56,6 +58,7 @@ import com.korlabs.nosht.R
 import com.korlabs.nosht.domain.model.enums.employee.TypeEmployeeRoleEnum
 import com.korlabs.nosht.navigation.Screen
 import com.korlabs.nosht.presentation.components.button.ButtonCustom
+import com.korlabs.nosht.presentation.components.column.ColumnCustom
 import com.korlabs.nosht.presentation.components.text.TextTitleCustom
 import com.korlabs.nosht.presentation.components.text_field.TextFieldCustom
 import com.korlabs.nosht.presentation.screens.users.employers.employer_home.ContractItem
@@ -94,17 +97,11 @@ fun AdminManageEmployersScreen(
 
     var listenEmployerResponse by rememberSaveable { mutableStateOf(false) }
 
-    Column(
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(20.dp)
-    ) {
+    ColumnCustom {
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
-            text = "Employers",
+            text = stringResource(id = R.string.employers_title),
             fontSize = 24.sp,
             textAlign = TextAlign.Start,
             modifier = Modifier
@@ -119,7 +116,7 @@ fun AdminManageEmployersScreen(
                 .fillMaxHeight(0.75f)
                 .padding(5.dp)
                 .background(
-                    colorResource(R.color.light_gray),
+                    MaterialTheme.colorScheme.surface,
                     shape = RoundedCornerShape(10.dp)
                 )
         ) {
@@ -130,7 +127,7 @@ fun AdminManageEmployersScreen(
                 onValueChange = {
 
                 },
-                hint = "Ingresa nombre del empleado"
+                hint = stringResource(id = R.string.enter_employee_name)
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -154,7 +151,7 @@ fun AdminManageEmployersScreen(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        ButtonCustom(text = "Agregar empleado") {
+        ButtonCustom(text = stringResource(id = R.string.add_employer)) {
             showAddEmployerDialog = true
         }
 
@@ -162,7 +159,7 @@ fun AdminManageEmployersScreen(
             AlertDialog(
                 onDismissRequest = { },
                 title = {
-                    Text(text = "Agregar nuevo empleado", fontSize = 20.sp)
+                    Text(text = stringResource(id = R.string.add_new_employer), fontSize = 20.sp)
                 },
                 text = {
                     Column {
@@ -174,7 +171,7 @@ fun AdminManageEmployersScreen(
                                 readOnly = true,
                                 value = selectedRoleEmployer.role,
                                 onValueChange = { },
-                                label = { Text("Select employer role") },
+                                label = { Text(stringResource(id = R.string.select_employer_role)) },
                                 trailingIcon = {
                                     TrailingIcon(
                                         expanded = expanded
@@ -213,14 +210,14 @@ fun AdminManageEmployersScreen(
                         },
                         enabled = isButtonCreateCodeEnabled
                     ) {
-                        Text("Agregar")
+                        Text(stringResource(id = R.string.add))
                     }
                 },
                 dismissButton = {
                     Button(
                         onClick = { showAddEmployerDialog = false }
                     ) {
-                        Text("Cancelar")
+                        Text(stringResource(id = R.string.cancel))
                     }
                 }
             )
@@ -232,7 +229,7 @@ fun AdminManageEmployersScreen(
             AlertDialog(
                 onDismissRequest = { },
                 title = {
-                    Text(text = "Count down code", fontSize = 20.sp)
+                    Text(text = stringResource(id = R.string.count_down_code), fontSize = 20.sp)
                 },
                 text = {
                     val timeLeft by timerViewModel.timeLeft.collectAsState()
@@ -241,7 +238,7 @@ fun AdminManageEmployersScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(10.dp)
-                            .align(Alignment.CenterHorizontally)
+                            //.align(Alignment.CenterHorizontally)
                     ) {
                         Text(
                             text = state.code!!,
@@ -253,7 +250,11 @@ fun AdminManageEmployersScreen(
 
                         if (timeLeft == 0) {
                             LaunchedEffect(Unit) {
-                                Toast.makeText(context, "Timer finished", Toast.LENGTH_SHORT)
+                                Toast.makeText(
+                                    context,
+                                    context.getString(R.string.timer_finished),
+                                    Toast.LENGTH_SHORT
+                                )
                                     .show()
                             }
                             contractsViewModel.onEvent(ContractsEvent.DisabilityCode)
@@ -269,13 +270,17 @@ fun AdminManageEmployersScreen(
                 dismissButton = {
                     Button(
                         onClick = {
-                            Toast.makeText(context, "Cancel timer", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.cancel_timer),
+                                Toast.LENGTH_SHORT
+                            ).show()
                             contractsViewModel.onEvent(ContractsEvent.DisabilityCode)
                             showCountDownTimeDialog = false
                             timerViewModel.finishTimer()
                         }
                     ) {
-                        Text("Cancelar")
+                        Text(stringResource(id = R.string.cancel))
                     }
                 }
             )
@@ -289,7 +294,11 @@ fun AdminManageEmployersScreen(
                 contractsViewModel.onEvent(ContractsEvent.Add(selectedRoleEmployer!!))
                 processCreateCode = true
             } else {
-                Toast.makeText(context, "You must to fill the role field", Toast.LENGTH_SHORT)
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.fill_all_fields),
+                    Toast.LENGTH_SHORT
+                )
                     .show()
                 isButtonCreateCodeEnabled = true
             }
@@ -310,7 +319,11 @@ fun AdminManageEmployersScreen(
 
                 showCountDownTimeDialog = true
             } else {
-                Toast.makeText(context, "Error adding employer", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.error_adding_employer),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
             showAddEmployerDialog = false
             isButtonCreateCodeEnabled = true
@@ -322,14 +335,18 @@ fun AdminManageEmployersScreen(
         if (listenEmployerResponse) {
             if (state.isTakenCode != null) {
                 if (state.isTakenCode) {
-                    Toast.makeText(context, "Employer joined successfully", Toast.LENGTH_SHORT)
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.employer_joined_successfully),
+                        Toast.LENGTH_SHORT
+                    )
                         .show()
                     contractsViewModel.onEvent(ContractsEvent.DisabilityCode)
                     timerViewModel.finishTimer()
                 } else {
                     Toast.makeText(
                         context,
-                        "Employer taken but there is an error. Weird :(",
+                        context.getString(R.string.employer_taken_error),
                         Toast.LENGTH_SHORT
                     ).show()
                 }

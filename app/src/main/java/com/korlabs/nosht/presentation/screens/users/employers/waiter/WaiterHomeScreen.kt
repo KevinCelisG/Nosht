@@ -21,12 +21,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.korlabs.nosht.R
 import com.korlabs.nosht.navigation.Screen
+import com.korlabs.nosht.presentation.components.column.ColumnCustom
 import com.korlabs.nosht.presentation.components.tables.TableExtendItem
 import com.korlabs.nosht.presentation.components.text_field.TextFieldCustom
 import com.korlabs.nosht.presentation.screens.users.general.tables.TablesEvent
@@ -42,17 +44,11 @@ fun WaiterHomeScreen(
 
     val state = tablesViewModel.state
 
-    Column(
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(20.dp)
-    ) {
+    ColumnCustom {
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
-            text = "Mesas",
+            text = stringResource(id = R.string.tables_title),
             fontSize = 24.sp,
             textAlign = TextAlign.Start,
             modifier = Modifier
@@ -78,7 +74,7 @@ fun WaiterHomeScreen(
                 onValueChange = {
 
                 },
-                hint = "Ingresa nombre de la mesa"
+                hint = stringResource(id = R.string.enter_table_name_hint)
             )
 
             Spacer(modifier = Modifier.height(20.dp))

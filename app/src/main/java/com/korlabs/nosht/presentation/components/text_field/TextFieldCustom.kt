@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,7 +22,6 @@ fun TextFieldCustom(
     onValueChange: (String) -> Unit,
     hint: String
 ) {
-
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
@@ -29,7 +29,7 @@ fun TextFieldCustom(
             .fillMaxWidth()
             .padding(start = 30.dp, end = 30.dp),
         placeholder = {
-            Text(text = hint)
+            Text(text = hint, color = MaterialTheme.colorScheme.onSurface)
         },
         singleLine = true,
         shape = RoundedCornerShape(8.dp)

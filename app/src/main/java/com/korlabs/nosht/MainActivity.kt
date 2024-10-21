@@ -1,6 +1,8 @@
 package com.korlabs.nosht
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -16,12 +18,14 @@ import com.korlabs.nosht.navigation.NavigationGraph
 import com.korlabs.nosht.navigation.Screen
 import com.korlabs.nosht.ui.theme.NoshtTheme
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.Locale
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        setLanguage(this)
         setContent {
             NoshtTheme {
                 Content()
@@ -52,4 +56,14 @@ fun Content() {
     ) {
         NavigationGraph(navHostController)
     }
+}
+
+fun setLanguage(context: Context) {
+    val currentLocale = Locale.getDefault()
+    val language = currentLocale.language
+
+    val newLocale = Locale(language)
+    Locale.setDefault(newLocale)
+    val config = Configuration(context.resources.configuration)
+    config.setLocale(newLocale)
 }

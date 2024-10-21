@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -41,6 +43,7 @@ import com.korlabs.nosht.domain.model.Table
 import com.korlabs.nosht.domain.model.enums.TableStatusEnum
 import com.korlabs.nosht.navigation.Screen
 import com.korlabs.nosht.presentation.components.button.ButtonCustom
+import com.korlabs.nosht.presentation.components.column.ColumnCustom
 import com.korlabs.nosht.presentation.components.tables.TableExtendItem
 import com.korlabs.nosht.presentation.components.text.TextSubtitleCustom
 import com.korlabs.nosht.presentation.components.text.TextTitleCustom
@@ -67,13 +70,7 @@ fun HandleTableScreen(
     val tableName = args.tableName
     val status = args.status
 
-    Column(
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(20.dp)
-    ) {
+    ColumnCustom {
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
@@ -94,13 +91,13 @@ fun HandleTableScreen(
                 .fillMaxHeight(0.8f)
                 .padding(5.dp)
                 .background(
-                    colorResource(R.color.light_gray),
+                    MaterialTheme.colorScheme.surface,
                     shape = RoundedCornerShape(10.dp)
                 )
         ) {
             Text(
-                text = "Items",
-                color = Color.White,
+                text = stringResource(id = R.string.items),
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 20.sp,
                 textAlign = TextAlign.Start,
                 modifier = Modifier
@@ -126,7 +123,7 @@ fun HandleTableScreen(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        ButtonCustom(text = "Agregar nuevo cliente") {
+        ButtonCustom(text = stringResource(id = R.string.add_new_customer)) {
             //showDialog = true
             navHostController.navigate(
                 Screen.AddItemsTableScreen(
@@ -140,13 +137,13 @@ fun HandleTableScreen(
             AlertDialog(
                 onDismissRequest = { },
                 title = {
-                    Text(text = "Agregar nuevo cliente", fontSize = 20.sp)
+                    Text(text = stringResource(id = R.string.add_new_customer), fontSize = 20.sp)
                 },
                 text = {
                     TextFieldCustom(
                         value = nameTable,
                         onValueChange = { nameTable = it },
-                        hint = "Ingresa nombre"
+                        hint = stringResource(id = R.string.hint_name)
                     )
                 },
                 confirmButton = {
@@ -155,14 +152,14 @@ fun HandleTableScreen(
                             addTable = true
                         }
                     ) {
-                        Text("Agregar")
+                        Text(stringResource(id = R.string.add))
                     }
                 },
                 dismissButton = {
                     Button(
                         onClick = { showDialog = false }
                     ) {
-                        Text("Cancelar")
+                        Text(stringResource(id = R.string.cancel))
                     }
                 }
             )
@@ -175,8 +172,11 @@ fun HandleTableScreen(
                 //tablesViewModel.onEvent(TablesEvent.Add(Table(nameTable)))
                 processAddTable = true
             } else {
-                Toast.makeText(context, "You must to fill all the fields", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.fill_all_fields),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
             addTable = false
         }
@@ -185,9 +185,17 @@ fun HandleTableScreen(
     LaunchedEffect(key1 = state.table, block = {
         if (processAddTable) {
             if (state.table != null) {
-                Toast.makeText(context, "Mesa agregada exitosamente", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.table_added_successfully),
+                    Toast.LENGTH_SHORT
+                ).show()
             } else {
-                Toast.makeText(context, "Error adding table", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.error_adding_table),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
             showDialog = false
             processAddTable = false
