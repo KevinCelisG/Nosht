@@ -102,15 +102,15 @@ class AuthRepositoryImpl @Inject constructor(
             val result = authClient.signUp(userSignUp)
 
             if (result is Resource.Successful) {
+                Log.d(Util.TAG, "Successful signUp weon")
                 val resultResource = apiClient.createUser(userSignUp)
                 emit(resultResource)
             } else {
-                emit(Resource.Error("Error in the sign up"))
+                Log.d(Util.TAG, "Failed signup weon")
+                emit(result)
             }
-            emit(Resource.Loading(false))
-        }.catch {
-            emit(Resource.Error("Error in the sign up catch"))
-            emit(Resource.Loading(false))
+        }.catch {exception ->
+            Log.e(Util.TAG, "Unrecognized error $exception")
         }
     }
 

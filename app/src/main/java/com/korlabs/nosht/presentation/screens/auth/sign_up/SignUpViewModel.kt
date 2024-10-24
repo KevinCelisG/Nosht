@@ -35,13 +35,18 @@ class SignUpViewModel @Inject constructor(
             repository.signUp(userSignUp).collect { result ->
                 state = when (result) {
                     is Resource.Successful -> {
-                        Log.d(Util.TAG, "Is Successful!!!")
-                        state.copy(isSuccessfulSignUP = true)
+                        state.copy(
+                            isSuccessfulSignUP = true,
+                            isLoading = false
+                        )
                     }
 
                     is Resource.Error -> {
-                        Log.d(Util.TAG, "Damn dude is an error. Error ${result.message}")
-                        state.copy(isSuccessfulSignUP = false)
+                        state.copy(
+                            isSuccessfulSignUP = false,
+                            errorMessage = result.message!!,
+                            isLoading = false
+                        )
                     }
 
                     is Resource.Loading -> {

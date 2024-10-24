@@ -48,12 +48,14 @@ fun SignUpScreen(
 
     val state = viewModel.state
 
-    var name by rememberSaveable { mutableStateOf("") }
-    var lastName by rememberSaveable { mutableStateOf("") }
-    var phone by rememberSaveable { mutableStateOf("") }
-    var email by rememberSaveable { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
-    var passwordConfirm by rememberSaveable { mutableStateOf("") }
+    var name by rememberSaveable { mutableStateOf("Carlos") }
+    var lastName by rememberSaveable { mutableStateOf("Castro") }
+    var businessName by rememberSaveable { mutableStateOf("YourFood") }
+    var location by rememberSaveable { mutableStateOf("Carrera 16") }
+    var phone by rememberSaveable { mutableStateOf("123345456") }
+    var email by rememberSaveable { mutableStateOf("a@a.com") }
+    var password by rememberSaveable { mutableStateOf("123456789") }
+    var passwordConfirm by rememberSaveable { mutableStateOf("123456789") }
 
     var checkSignUp by rememberSaveable { mutableStateOf(false) }
     var processSignUp by rememberSaveable { mutableStateOf(false) }
@@ -67,11 +69,7 @@ fun SignUpScreen(
     )
 
     ColumnCustom {
-        Spacer(modifier = Modifier.height(20.dp))
-
         TextTitleCustom(title = title)
-
-        Spacer(modifier = Modifier.height(20.dp))
 
         TextFieldCustom(
             value = name,
@@ -79,17 +77,25 @@ fun SignUpScreen(
             hint = stringResource(id = R.string.hint_name)
         )
 
-        if (!args.isBusiness) {
-            Spacer(modifier = Modifier.height(20.dp))
+        TextFieldCustom(
+            value = lastName,
+            onValueChange = { lastName = it },
+            hint = stringResource(id = R.string.hint_last_name)
+        )
+
+        if (args.isBusiness) {
+            TextFieldCustom(
+                value = businessName,
+                onValueChange = { businessName = it },
+                hint = stringResource(id = R.string.hint_company_name)
+            )
 
             TextFieldCustom(
-                value = lastName,
-                onValueChange = { lastName = it },
-                hint = stringResource(id = R.string.hint_last_name)
+                value = location,
+                onValueChange = { location = it },
+                hint = stringResource(id = R.string.hint_location)
             )
         }
-
-        Spacer(modifier = Modifier.height(10.dp))
 
         TextFieldCustom(
             value = phone,
@@ -97,15 +103,11 @@ fun SignUpScreen(
             hint = stringResource(id = R.string.hint_phone)
         )
 
-        Spacer(modifier = Modifier.height(10.dp))
-
         TextFieldCustom(
             value = email,
             onValueChange = { email = it },
             hint = stringResource(id = R.string.email_hint)
         )
-
-        Spacer(modifier = Modifier.height(10.dp))
 
         PasswordTextFieldCustom(
             value = password,
@@ -113,15 +115,11 @@ fun SignUpScreen(
             hint = stringResource(id = R.string.hint_password)
         )
 
-        Spacer(modifier = Modifier.height(10.dp))
-
         PasswordTextFieldCustom(
             value = passwordConfirm,
             onValueChange = { passwordConfirm = it },
             hint = stringResource(id = R.string.hint_password_confirm)
         )
-
-        Spacer(modifier = Modifier.height(20.dp))
 
         Row(
             modifier = Modifier
@@ -143,7 +141,18 @@ fun SignUpScreen(
 
     LaunchedEffect(key1 = checkSignUp, block = {
         if (checkSignUp) {
-            if (checkFields(args, name, phone, email, password, passwordConfirm, lastName)) {
+            if (checkFields(
+                    args,
+                    name,
+                    phone,
+                    email,
+                    password,
+                    passwordConfirm,
+                    lastName,
+                    location,
+                    businessName
+                )
+            ) {
                 if (password == passwordConfirm) {
                     viewModel.onEvent(
                         SignUpEvent.SignUp(
@@ -153,10 +162,13 @@ fun SignUpScreen(
                                 phone,
                                 password,
                                 if (args.isBusiness) TypeUserEnum.BUSINESS else TypeUserEnum.EMPLOYER,
-                                if (args.isBusiness) null else lastName,
+                                lastName,
+                                if (args.isBusiness) location else null,
+                                if (args.isBusiness) businessName else null
                             )
                         )
                     )
+
                     processSignUp = true
                 } else {
                     Toast.makeText(
@@ -176,8 +188,8 @@ fun SignUpScreen(
         }
     })
 
-    LaunchedEffect(key1 = state.isSuccessfulSignUP, block = {
-        if (processSignUp) {
+    LaunchedEffect(key1 = state.isLoading, block = {
+        if (!state.isLoading && processSignUp) {
             if (state.isSuccessfulSignUP) {
                 Toast.makeText(
                     context,
@@ -188,12 +200,11 @@ fun SignUpScreen(
             } else {
                 Toast.makeText(
                     context,
-                    context.getString(R.string.sign_up_failed),
+                    state.errorMessage,
                     Toast.LENGTH_SHORT
                 ).show()
                 Log.d(Util.TAG, "Failed in the screen, so weird. ${viewModel.state}")
             }
-            processSignUp = false
         }
     })
 
@@ -209,14 +220,16 @@ fun checkFields(
     email: String,
     password: String,
     passwordConfirm: String,
-    lastName: String
+    lastName: String,
+    location: String,
+    businessName: String
 ): Boolean {
     val checkBasicsFields =
-        name.isNotBlank() && phone.isNotBlank() && email.isNotBlank() && password.isNotBlank() && passwordConfirm.isNotBlank()
+        name.isNotBlank() && phone.isNotBlank() && email.isNotBlank() && password.isNotBlank() && passwordConfirm.isNotBlank() && lastName.isNotBlank()
 
     return if (!args.isBusiness) {
-        checkBasicsFields && lastName.isNotBlank()
-    } else {
         checkBasicsFields
+    } else {
+        checkBasicsFields && location.isNotBlank() && businessName.isNotBlank()
     }
 }

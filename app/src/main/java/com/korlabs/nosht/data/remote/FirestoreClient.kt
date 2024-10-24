@@ -100,22 +100,25 @@ class FirestoreClient @Inject constructor() : APIClient {
     override suspend fun createUser(userSignUp: UserSignUp): Resource<String> {
         return try {
             if (userSignUp.uid != null) {
-
                 val userToCreate: HashMap<Any, Any>
                 val collection: String
 
                 if (userSignUp.typeUserEnum == TypeUserEnum.BUSINESS) {
                     userToCreate = hashMapOf(
                         "name" to userSignUp.name,
+                        "lastName" to userSignUp.lastName,
                         "email" to userSignUp.email,
                         "phone" to userSignUp.phone,
+                        "location" to userSignUp.location!!,
+                        "businessName" to userSignUp.businessName!!,
+                        "isOpenTheBusiness" to false,
                     )
 
                     collection = businessCollection
                 } else {
                     userToCreate = hashMapOf(
                         "name" to userSignUp.name,
-                        "lastName" to userSignUp.lastName!!,
+                        "lastName" to userSignUp.lastName,
                         "email" to userSignUp.email,
                         "phone" to userSignUp.phone,
                     )

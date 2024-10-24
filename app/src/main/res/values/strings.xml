@@ -16,6 +16,8 @@
     <string name="sign_up_title_employer">Registro de Empleado</string>
     <string name="hint_name">Ingresa nombre</string>
     <string name="hint_last_name">Ingresa apellido</string>
+    <string name="hint_company_name">Ingresa el nombre del restaurante</string>
+    <string name="hint_location">Ingresa la ubicación del restaurante</string>
     <string name="hint_phone">Ingresa celular</string>
     <string name="hint_email">Ingresa email</string>
     <string name="hint_password">Ingresa contraseña</string>
@@ -87,4 +89,10 @@
     <string name="joined_successfully">Unido con éxito</string>
     <string name="error_joining_business">Error al unirse al negocio, solicita otro código</string>
     <string name="new_remote_contracts">Hay nuevos datos de contratos remotos</string>
+
+    <!-- Error messages -->
+    <string name="sign_up_error_exists_an_account">El email ya está registrado</string>
+    <string name="network_error">Conectate a internet</string>
+    <string name="password_characters_error">La constraseña debe tener al menos 6 caracteres</string>
+    <string name="unrecognized_error">Error desconocido, intante de nuevo</string>
 </resources>

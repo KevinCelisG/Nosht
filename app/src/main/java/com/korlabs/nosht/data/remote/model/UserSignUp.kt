@@ -8,6 +8,8 @@ data class UserSignUp(
     val phone: String,
     val password: String,
     val typeUserEnum: TypeUserEnum,
-    val lastName: String? = "",
+    val lastName: String,
+    val location: String? = "",
+    val businessName: String? = "",
     var uid: String? = null
 )

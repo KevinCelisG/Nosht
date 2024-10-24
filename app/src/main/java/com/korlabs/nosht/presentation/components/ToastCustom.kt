@@ -1,8 +1,6 @@
-package com.cohesion.smartwallet.presentation.components
+package com.korlabs.nosht.presentation.components
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable

@@ -75,23 +75,17 @@ fun LoginScreen(
     ColumnCustom {
         TextTitleCustom(title = stringResource(id = R.string.login_title))
 
-        Spacer(modifier = Modifier.height(20.dp))
-
         TextFieldCustom(
             value = email,
             onValueChange = { email = it },
             hint = stringResource(id = R.string.email_hint)
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
-
         PasswordTextFieldCustom(
             value = password,
             onValueChange = { password = it },
             hint = stringResource(id = R.string.password_hint)
         )
-
-        Spacer(modifier = Modifier.height(10.dp))
 
         TextSubtitleCustom(subtitle = stringResource(id = R.string.forgot_password))
 

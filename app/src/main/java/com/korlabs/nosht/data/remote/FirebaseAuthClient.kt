@@ -1,8 +1,15 @@
 package com.korlabs.nosht.data.remote
 
+import android.content.Context
 import android.util.Log
+import androidx.compose.ui.res.stringResource
 import com.google.firebase.Firebase
+import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.auth.auth
+import com.korlabs.nosht.NoshtApplication
+import com.korlabs.nosht.R
 import com.korlabs.nosht.data.remote.model.UserSignUp
 import com.korlabs.nosht.domain.model.users.Business
 import com.korlabs.nosht.domain.remote.AuthClient
@@ -37,11 +44,14 @@ class FirebaseAuthClient @Inject constructor() : AuthClient {
 
             Log.d(Util.TAG, "Successful")
             Resource.Successful()
+        } catch (e: FirebaseAuthUserCollisionException) {
+            Resource.Error(message = NoshtApplication.appContext.getString(R.string.sign_up_error_exists_an_account))
+        } catch (e: FirebaseNetworkException) {
+            Resource.Error(message = NoshtApplication.appContext.getString(R.string.network_error))
+        } catch (e: FirebaseAuthWeakPasswordException) {
+            Resource.Error(message = NoshtApplication.appContext.getString(R.string.password_characters_error))
         } catch (e: Exception) {
-            Log.d(Util.TAG, "Error ${e.message}")
-            Resource.Error(
-                message = e.message ?: "Error in the sign up with the business ${userSignUp.email}"
-            )
+            Resource.Error(message = NoshtApplication.appContext.getString(R.string.unrecognized_error))
         }
     }
 }
