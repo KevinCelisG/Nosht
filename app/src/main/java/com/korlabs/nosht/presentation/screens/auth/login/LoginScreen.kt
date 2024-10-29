@@ -66,8 +66,8 @@ fun LoginScreen(
 
     val state = loginViewModel.state
 
-    var email by rememberSaveable { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
+    var email by rememberSaveable { mutableStateOf("idk@jdjd.com") }
+    var password by rememberSaveable { mutableStateOf("123456789") }
 
     var checkLogin by rememberSaveable { mutableStateOf(false) }
     var processLogin by rememberSaveable { mutableStateOf(false) }
@@ -143,8 +143,8 @@ fun LoginScreen(
             }
         })
 
-        LaunchedEffect(key1 = state.user, block = {
-            if (processLogin) {
+        LaunchedEffect(key1 = state.isLoading, block = {
+            if (!state.isLoading && processLogin) {
                 if (state.user != null) {
                     Log.d(Util.TAG, "Current user ${state.user.typeUserEnum.typeUser}")
 
@@ -161,7 +161,7 @@ fun LoginScreen(
                 } else {
                     Toast.makeText(
                         context,
-                        context.getString(R.string.incorrect_email_password),
+                        state.errorMessage,
                         Toast.LENGTH_SHORT
                     ).show()
                 }

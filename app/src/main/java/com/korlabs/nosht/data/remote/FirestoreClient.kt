@@ -7,6 +7,8 @@ import androidx.lifecycle.MutableLiveData
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.firestore
+import com.korlabs.nosht.NoshtApplication
+import com.korlabs.nosht.R
 import com.korlabs.nosht.data.mapper.toBusiness
 import com.korlabs.nosht.data.mapper.toEmployer
 import com.korlabs.nosht.data.remote.model.UserSignUp
@@ -152,7 +154,7 @@ class FirestoreClient @Inject constructor() : APIClient {
                         Log.d(Util.TAG, "Employer data: ${response.data}")
                         Resource.Successful(response.toEmployer(uid))
                     } else {
-                        Resource.Error("No such document")
+                        Resource.Error(NoshtApplication.appContext.getString(R.string.no_such_account))
                     }
                 }
             } else {

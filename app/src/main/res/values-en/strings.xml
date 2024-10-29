@@ -94,6 +94,12 @@
     <!-- Error messages -->
     <string name="sign_up_error_exists_an_account">Error The email address is already in use by another account</string>
     <string name="network_error">Connect to internet</string>
+    <string name="email_error">Enter the email with a valid format</string>
     <string name="password_characters_error">Password should be at least 6 characters</string>
     <string name="unrecognized_error">Unrecognized error, try again</string>
+    <string name="no_such_account">No such account, signUp or review yours credentials and try again</string>
+
+    <!-- Dashboard -->
+    <string name="message_hello">Hello, %1$s</string>
+    <string name="sales_day">Sales of the day</string>
 </resources>

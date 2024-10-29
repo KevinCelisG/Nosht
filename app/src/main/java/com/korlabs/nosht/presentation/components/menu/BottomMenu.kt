@@ -12,7 +12,6 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import com.korlabs.nosht.MainActivity
 import com.korlabs.nosht.navigation.Screen
 
 @Composable
@@ -54,9 +53,9 @@ fun BottomMenu(
         )
 
         NavigationBarItem(
-            selected = currentScreen == Screen.AdminProfileScreen.name,
+            selected = currentScreen == Screen.ProfileScreen.name,
             onClick = {
-                navHostController.navigate(Screen.AdminProfileScreen)
+                navHostController.navigate(Screen.ProfileScreen)
             },
             icon = {
                 Icon(imageVector = Icons.Default.Person, contentDescription = "Profile")

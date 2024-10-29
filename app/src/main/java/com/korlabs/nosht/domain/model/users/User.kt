@@ -4,6 +4,7 @@ import com.korlabs.nosht.domain.model.enums.TypeUserEnum
 
 open class User(
     val name: String? = "",
+    val lastName: String? = "",
     val email: String? = "",
     val phone: String? = "",
     var uid: String? = null,

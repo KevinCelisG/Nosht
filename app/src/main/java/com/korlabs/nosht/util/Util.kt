@@ -23,8 +23,7 @@ class Util {
             return when (tableStatus) {
                 TableStatusEnum.AVAILABLE.status -> TableStatusEnum.AVAILABLE
                 TableStatusEnum.NOT_AVAILABLE.status -> TableStatusEnum.NOT_AVAILABLE
-                TableStatusEnum.PAID.status -> TableStatusEnum.PAID
-                TableStatusEnum.UNPAID.status -> TableStatusEnum.UNPAID
+                TableStatusEnum.RESERVED.status -> TableStatusEnum.RESERVED
                 else -> TableStatusEnum.AVAILABLE
             }
         }

@@ -2,29 +2,37 @@ package com.korlabs.nosht.presentation.screens.users.business.admin_home
 
 import android.util.Log
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -32,6 +40,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.korlabs.nosht.R
 import com.korlabs.nosht.data.remote.FirestoreClient
+import com.korlabs.nosht.data.repository.AuthRepositoryImpl
+import com.korlabs.nosht.domain.model.users.Business
 import com.korlabs.nosht.navigation.Screen
 import com.korlabs.nosht.presentation.components.menu.MenuItem
 import com.korlabs.nosht.presentation.components.resourcesBusiness.ResourceItem
@@ -64,18 +74,99 @@ fun AdminHomeScreen(
             .fillMaxSize()
             .padding(20.dp)
             .verticalScroll(rememberScrollState())
+            .background(MaterialTheme.colorScheme.background)
     ) {
         Spacer(modifier = Modifier.height(20.dp))
 
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Icon(
+                imageVector = Icons.Default.Person,
+                contentDescription = "Profile",
+                modifier = Modifier
+                    .size(30.dp)
+                    .clickable { navHostController.navigate(Screen.ProfileScreen) }
+            )
+
+            Text(
+                text = (AuthRepositoryImpl.currentUser as Business).businessName!!,
+                fontSize = 20.sp,
+                textAlign = TextAlign.Start,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 16.dp)
+            )
+
+            Icon(
+                imageVector = Icons.Default.Notifications,
+                contentDescription = "Notifications",
+                modifier = Modifier
+                    .size(30.dp)
+                    .clickable { /* TO DO - Implement notification screen */ }
+            )
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+
         Text(
-            text = stringResource(id = R.string.dashboard_title),
-            fontSize = 24.sp,
+            text = stringResource(
+                id = R.string.message_hello,
+                (AuthRepositoryImpl.currentUser as Business).name!!
+            ),
+            fontSize = 18.sp,
             textAlign = TextAlign.Start,
             modifier = Modifier
                 .fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.height(20.dp))
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(110.dp)
+                .padding(5.dp)
+                .border(
+                    1.dp,
+                    MaterialTheme.colorScheme.onBackground,
+                    shape = RoundedCornerShape(15.dp)
+                )
+                .background(
+                    MaterialTheme.colorScheme.surface,
+                    shape = RoundedCornerShape(10.dp)
+                )
+                .padding(15.dp)
+        ) {
+            Text(
+                text = stringResource(id = R.string.sales_day),
+                color = MaterialTheme.colorScheme.onBackground,
+                fontSize = 20.sp,
+                textAlign = TextAlign.Start,
+                modifier = Modifier
+                    .clickable {
+                        navHostController.navigate(Screen.TablesScreen)
+                    }
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Text(
+                text = "$ 0",
+                color = MaterialTheme.colorScheme.onBackground,
+                fontSize = 28.sp,
+                textAlign = TextAlign.Start,
+                modifier = Modifier
+                    .clickable {
+                        navHostController.navigate(Screen.TablesScreen)
+                    }
+            )
+        }
 
         Column(
             modifier = Modifier

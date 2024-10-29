@@ -23,16 +23,24 @@ fun Business.toBusinessEntity(): BusinessEntity {
     return BusinessEntity(
         id = uid ?: "",
         name = name ?: "",
+        lastName = lastName ?: "",
         email = email ?: "",
-        phone = phone ?: ""
+        phone = phone ?: "",
+        location = location ?: "",
+        businessName = businessName ?: "",
+        isOpenTheBusiness = isOpenTheBusiness ?: false
     )
 }
 
 fun BusinessEntity.toBusiness(): Business {
     return Business(
         name = name,
+        lastName = lastName,
         email = email,
         phone = phone,
+        location = location,
+        businessName = businessName,
+        isOpenTheBusiness = isOpenTheBusiness,
         uid = id
     )
 }

@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.compose.ui.res.stringResource
 import com.google.firebase.Firebase
 import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.auth.auth
@@ -28,8 +29,15 @@ class FirebaseAuthClient @Inject constructor() : AuthClient {
         return try {
             val response = auth.signInWithEmailAndPassword(user, password).await()
             Resource.Successful(data = response.user?.uid)
+        } catch (e: FirebaseNetworkException) {
+            Resource.Error(message = NoshtApplication.appContext.getString(R.string.network_error))
+        } catch (e: FirebaseAuthInvalidCredentialsException) {
+            Resource.Error(message = NoshtApplication.appContext.getString(R.string.email_error))
+        } catch (e: FirebaseAuthWeakPasswordException) {
+            Resource.Error(message = NoshtApplication.appContext.getString(R.string.password_characters_error))
         } catch (e: Exception) {
-            Resource.Error(message = e.message ?: "Error in the login with the business $user")
+            Log.d(Util.TAG, "Expcetion: $e")
+            Resource.Error(message = NoshtApplication.appContext.getString(R.string.unrecognized_error))
         }
     }
 

@@ -1,9 +1,5 @@
 package com.korlabs.nosht.navigation
 
-import com.korlabs.nosht.domain.model.Table
-import com.korlabs.nosht.domain.model.enums.TableStatusEnum
-import com.korlabs.nosht.domain.model.enums.employee.EmployerStatusEnum
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -35,7 +31,7 @@ sealed class Screen(val name: String) {
     data object AdminManageEmployersScreen : Screen("AdminManageEmployersScreen")
 
     @Serializable
-    data object AdminProfileScreen : Screen("AdminProfileScreen")
+    data object ProfileScreen : Screen("ProfileScreen")
 
     @Serializable
     data object ResourcesScreen : Screen("ResourcesScreen")

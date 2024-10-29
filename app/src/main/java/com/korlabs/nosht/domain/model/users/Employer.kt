@@ -6,11 +6,12 @@ class Employer(
     name: String? = "",
     email: String? = "",
     phone: String? = "",
-    val lastName: String? = "",
+    lastName: String? = "",
     uid: String? = null,
     typeUserEnum: TypeUserEnum = TypeUserEnum.EMPLOYER
 ) : User(
     name,
+    lastName,
     email,
     phone,
     uid,

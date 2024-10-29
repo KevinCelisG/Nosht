@@ -38,7 +38,10 @@ class LoginViewModel @Inject constructor(
                 state = when (result) {
                     is Resource.Successful -> {
                         Log.d(Util.TAG, "Successful ${result.data}")
-                        state.copy(user = result.data)
+                        state.copy(
+                            user = result.data,
+                            isLoading = false
+                        )
                     }
 
                     is Resource.Error -> {
@@ -46,7 +49,11 @@ class LoginViewModel @Inject constructor(
                             Util.TAG,
                             result.message ?: "Error in the login with the business $user"
                         )
-                        state.copy(user = null)
+                        state.copy(
+                            user = null,
+                            errorMessage = result.message!!,
+                            isLoading = false
+                        )
                     }
 
                     is Resource.Loading -> {

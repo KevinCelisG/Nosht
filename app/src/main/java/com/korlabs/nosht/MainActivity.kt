@@ -45,7 +45,7 @@ fun Content() {
     Scaffold(
         bottomBar = {
             if (
-                currentScreen == Screen.AdminProfileScreen.name ||
+                currentScreen == Screen.ProfileScreen.name ||
                 currentScreen == Screen.AdminHomeScreen.name ||
                 currentScreen == Screen.AdminManageEmployersScreen.name ||
                 currentScreen == Screen.AdminManageMoneyScreen.name

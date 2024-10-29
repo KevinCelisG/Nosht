@@ -15,8 +15,12 @@ import com.korlabs.nosht.domain.model.users.Employer
 fun DocumentSnapshot.toBusiness(uid: String): Business {
     return Business(
         name = getString("name"),
+        lastName = getString("lastName"),
         email = getString("email"),
         phone = getString("phone"),
+        location = getString("location"),
+        businessName = getString("businessName"),
+        isOpenTheBusiness = getBoolean("isOpenTheBusiness"),
         uid = uid
     )
 }

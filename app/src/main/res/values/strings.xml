@@ -93,6 +93,12 @@
     <!-- Error messages -->
     <string name="sign_up_error_exists_an_account">El email ya está registrado</string>
     <string name="network_error">Conectate a internet</string>
+    <string name="email_error">Ingresa el email con un formato adecuado</string>
     <string name="password_characters_error">La constraseña debe tener al menos 6 caracteres</string>
-    <string name="unrecognized_error">Error desconocido, intante de nuevo</string>
+    <string name="unrecognized_error">Error desconocido, intente de nuevo</string>
+    <string name="no_such_account">No existe la cuenta, registrate o revisa tus credenciales e intantalo de nuevo</string>
+
+    <!-- Dashboard -->
+    <string name="message_hello">Hola, %1$s</string>
+    <string name="sales_day">Ventas del día</string>
 </resources>

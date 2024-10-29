@@ -29,8 +29,12 @@ data class ContractEntity(
 data class BusinessEntity(
     @PrimaryKey val id: String,
     val name: String,
+    val lastName: String,
     val email: String,
-    val phone: String
+    val phone: String,
+    val location: String,
+    val businessName: String,
+    val isOpenTheBusiness: Boolean
 )
 
 @Entity(tableName = "TableEntity")

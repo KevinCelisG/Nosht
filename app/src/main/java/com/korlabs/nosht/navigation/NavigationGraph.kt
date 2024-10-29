@@ -86,7 +86,7 @@ fun NavigationGraph(
             AdminManageEmployersScreen(navHostController, contractsViewModel, timerViewModel)
         }
 
-        composable<Screen.AdminProfileScreen> {
+        composable<Screen.ProfileScreen> {
             AdminProfileScreen()
         }
 
