@@ -32,6 +32,7 @@ import com.korlabs.nosht.data.remote.FirestoreClient
 import com.korlabs.nosht.domain.model.Contract
 import com.korlabs.nosht.domain.model.Menu
 import com.korlabs.nosht.domain.model.ResourceBusiness
+import com.korlabs.nosht.domain.model.ResourceMovement
 import com.korlabs.nosht.domain.model.enums.TypeUserEnum
 import com.korlabs.nosht.domain.model.enums.employee.EmployerStatusEnum
 import com.korlabs.nosht.domain.model.enums.employee.TypeEmployeeRoleEnum
@@ -59,18 +60,75 @@ class ResourcesRepositoryImpl @Inject constructor(
     private val _data = MutableLiveData<Resource<List<ResourceBusiness>>>()
     override val data: LiveData<Resource<List<ResourceBusiness>>> = _data
 
-    override suspend fun addResourceBusiness(resourceBusiness: ResourceBusiness): Flow<Resource<ResourceBusiness>> {
+    override suspend fun addResourceBusiness(
+        resourceBusiness: ResourceBusiness,
+        resourceMovement: ResourceMovement
+    ): Flow<Resource<ResourceBusiness>> {
         return flow {
             emit(Resource.Loading(true))
 
             val result = apiClient.addResourceBusiness(
+                AuthRepositoryImpl.currentUser as Business,
+                resourceBusiness,
+                resourceMovement
+            )
+
+            emit(result)
+        }.catch {
+            emit(Resource.Error("Error adding resource business"))
+            emit(Resource.Loading(false))
+        }
+    }
+
+    override suspend fun deleteResourceBusiness(resourceBusiness: ResourceBusiness): Flow<Resource<Boolean>> {
+        return flow {
+            emit(Resource.Loading(true))
+
+            val result = apiClient.deleteResourceBusiness(
+                AuthRepositoryImpl.currentUser as Business,
+                resourceBusiness
+            )
+
+            if (result is Resource.Successful) {
+                dao.deleteAResource(resourceBusiness.toResourceEntity(resourceBusiness.documentReference!!))
+                emit(Resource.Successful(true))
+            } else {
+                emit(result)
+            }
+        }.catch {
+            emit(Resource.Error("Error updating resource business"))
+            emit(Resource.Loading(false))
+        }
+    }
+
+    override suspend fun updateResourceBusiness(resourceBusiness: ResourceBusiness): Flow<Resource<ResourceBusiness>> {
+        return flow {
+            emit(Resource.Loading(true))
+
+            val result = apiClient.updateResourceBusiness(
                 AuthRepositoryImpl.currentUser as Business,
                 resourceBusiness
             )
 
             emit(result)
         }.catch {
-            emit(Resource.Error("Error adding resource business"))
+            emit(Resource.Error("Error updating resource business"))
+            emit(Resource.Loading(false))
+        }
+    }
+
+    override suspend fun createResourceBusiness(resourceBusiness: ResourceBusiness): Flow<Resource<ResourceBusiness>> {
+        return flow {
+            emit(Resource.Loading(true))
+
+            val result = apiClient.createResourceBusiness(
+                AuthRepositoryImpl.currentUser as Business,
+                resourceBusiness
+            )
+
+            emit(result)
+        }.catch {
+            emit(Resource.Error("Error making resource business"))
             emit(Resource.Loading(false))
         }
     }

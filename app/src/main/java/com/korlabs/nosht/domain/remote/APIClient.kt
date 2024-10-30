@@ -5,6 +5,7 @@ import com.korlabs.nosht.data.remote.model.UserSignUp
 import com.korlabs.nosht.domain.model.Contract
 import com.korlabs.nosht.domain.model.Menu
 import com.korlabs.nosht.domain.model.ResourceBusiness
+import com.korlabs.nosht.domain.model.ResourceMovement
 import com.korlabs.nosht.domain.model.Table
 import com.korlabs.nosht.domain.model.enums.employee.TypeEmployeeRoleEnum
 import com.korlabs.nosht.domain.model.users.Business
@@ -34,7 +35,23 @@ interface APIClient {
     suspend fun getTables(businessUid: String)
 
     // Resources business
+    suspend fun createResourceBusiness(
+        currentBusiness: Business?,
+        resourceBusiness: ResourceBusiness
+    ): Resource<ResourceBusiness>
+
+    suspend fun deleteResourceBusiness(
+        currentBusiness: Business?,
+        resourceBusiness: ResourceBusiness
+    ): Resource<Boolean>
+
     suspend fun addResourceBusiness(
+        currentBusiness: Business?,
+        resourceBusiness: ResourceBusiness,
+        resourceMovement: ResourceMovement
+    ): Resource<ResourceBusiness>
+
+    suspend fun updateResourceBusiness(
         currentBusiness: Business?,
         resourceBusiness: ResourceBusiness
     ): Resource<ResourceBusiness>

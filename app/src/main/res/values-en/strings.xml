@@ -46,13 +46,43 @@
     <!-- Resources -->
     <string name="resources_title">Resources</string>
     <string name="enter_resource_name_hint">Enter resource name</string>
+    <string name="enter_resource_price_purchase_hint">Enter resource purchase price</string>
+    <string name="enter_resource_price_sell_hint">Enter resource sell price</string>
+    <string name="enter_resource_min_stock_hint">Enter the min resource stock</string>
+    <string name="enter_resource_max_stock_hint">Enter the max resource stock</string>
+    <string name="enter_resource_amount_hint">Enter the amount of the resource</string>
+    <string name="enter_resource_amount_to_add_hint">Enter the amount of resources to add</string>
     <string name="add_new_resource">Add new resource</string>
+    <string name="update_resource">Update resource</string>
     <string name="enter_name_hint">Enter resource name</string>
-    <string name="select_type_of_resource">Select type of resource</string>
+    <string name="select_type_of_resource">Select resource type</string>
+    <string name="select_type_of_measurement">Select measurement type</string>
     <string name="add_button">Add</string>
     <string name="cancel_button">Cancel</string>
     <string name="resource_added_successfully">Resource added successfully</string>
-    <string name="error_adding_resource">Error adding resource</string>
+    <string name="resource_created_successfully">Resource created successfully</string>
+    <string name="resource_updated_successfully">Resource updated successfully</string>
+    <string name="resource_deleted_successfully">Resource deleted successfully</string>
+    <string name="error_adding_resource">Error adding</string>
+    <string name="error_making_resource">Error making</string>
+    <string name="error_deleting_resource">Error deleting</string>
+    <string name="error_updating_resource">Error updating</string>
+    <string name="kilograms_measurement">Kilograms</string>
+    <string name="liters_measurement">Liters</string>
+    <string name="units_measurement">Unities</string>
+    <string name="only_numbers">Only numbers</string>
+
+    <string name="resource_name_hint">Name</string>
+    <string name="resource_price_purchase_hint">Price</string>
+    <string name="resource_type_resource_hint">Type of resource</string>
+    <string name="resource_type_measurement_hint">Type of measurement</string>
+    <string name="resource_min_stock_hint">Stock minimum</string>
+    <string name="resource_max_stock_hint">Stock maximum</string>
+    <string name="resource_amount_hint">Amount</string>
+    <string name="close">Close</string>
+    <string name="accept">Accept</string>
+    <string name="message_to_delete">Are you sure to delete %1$s?</string>
+    <string name="message_suggest_update_the_price">The unit cost of this item in the purchase is higher than its current sale price. We recommend updating the sale price to avoid potential losses</string>
 
     <!-- Tables -->
     <string name="tables_title">Tables</string>

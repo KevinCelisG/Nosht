@@ -18,6 +18,8 @@ import com.korlabs.nosht.util.Util
 import com.korlabs.nosht.util.Util.Companion.getEmployerRole
 import com.korlabs.nosht.util.Util.Companion.getEmployerStatus
 import com.korlabs.nosht.util.Util.Companion.getTableStatus
+import kotlin.math.max
+import kotlin.math.min
 
 fun Business.toBusinessEntity(): BusinessEntity {
     return BusinessEntity(
@@ -106,6 +108,11 @@ fun ResourceBusiness.toResourceEntity(uid: String): ResourceEntity {
         id = documentReference.toString(),
         userId = uid,
         name = name,
+        minStock = minStock,
+        maxStock = maxStock,
+        price = price,
+        amount = amount,
+        typeMeasurement = typeMeasurementEnum.type,
         type = typeResourceEnum.type
     )
 }
@@ -113,7 +120,12 @@ fun ResourceBusiness.toResourceEntity(uid: String): ResourceEntity {
 fun ResourceEntity.toResourceBusiness(): ResourceBusiness {
     return ResourceBusiness(
         name = name,
+        minStock = minStock,
+        maxStock = maxStock,
+        price = price,
+        amount = amount,
         typeResourceEnum = Util.getTypeResource(type),
+        typeMeasurementEnum = Util.getTypeMeasurement(typeMeasurement),
         documentReference = id
     )
 }

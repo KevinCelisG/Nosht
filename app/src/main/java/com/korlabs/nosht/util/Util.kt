@@ -2,6 +2,7 @@ package com.korlabs.nosht.util
 
 import com.korlabs.nosht.domain.model.enums.MenuStatusEnum
 import com.korlabs.nosht.domain.model.enums.TableStatusEnum
+import com.korlabs.nosht.domain.model.enums.TypeMeasurementEnum
 import com.korlabs.nosht.domain.model.enums.TypeResourceEnum
 import com.korlabs.nosht.domain.model.enums.employee.CodeStatusEnum
 import com.korlabs.nosht.domain.model.enums.employee.EmployerStatusEnum
@@ -60,6 +61,15 @@ class Util {
                 TypeResourceEnum.COMMERCIAL_PRODUCTS.type -> TypeResourceEnum.COMMERCIAL_PRODUCTS
                 TypeResourceEnum.COMPANION.type -> TypeResourceEnum.COMPANION
                 else -> TypeResourceEnum.FOOD
+            }
+        }
+
+        fun getTypeMeasurement(type: String): TypeMeasurementEnum {
+            return when (type) {
+                TypeMeasurementEnum.KILOGRAM.type -> TypeMeasurementEnum.KILOGRAM
+                TypeMeasurementEnum.LITER.type -> TypeMeasurementEnum.LITER
+                TypeMeasurementEnum.UNIT.type -> TypeMeasurementEnum.UNIT
+                else -> TypeMeasurementEnum.KILOGRAM
             }
         }
 

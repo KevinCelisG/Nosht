@@ -15,6 +15,7 @@ import com.korlabs.nosht.data.remote.model.UserSignUp
 import com.korlabs.nosht.domain.model.Contract
 import com.korlabs.nosht.domain.model.Menu
 import com.korlabs.nosht.domain.model.ResourceBusiness
+import com.korlabs.nosht.domain.model.ResourceMovement
 import com.korlabs.nosht.domain.model.Table
 import com.korlabs.nosht.domain.model.enums.TypeUserEnum
 import com.korlabs.nosht.domain.model.enums.employee.CodeStatusEnum
@@ -33,6 +34,8 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.math.max
+import kotlin.math.min
 
 @Singleton
 class FirestoreClient @Inject constructor() : APIClient {
@@ -45,6 +48,7 @@ class FirestoreClient @Inject constructor() : APIClient {
     private val tablesCollection = "Tables"
 
     private val resourcesBusinessCollection = "Resources"
+    private val resourcesMovementsBusinessCollection = "Movements"
     private val menusCollection = "Menus"
     private val componentsCollection = "Components"
 
@@ -220,16 +224,135 @@ class FirestoreClient @Inject constructor() : APIClient {
 
     override suspend fun addResourceBusiness(
         currentBusiness: Business?,
+        resourceBusiness: ResourceBusiness,
+        resourceMovement: ResourceMovement
+    ): Resource<ResourceBusiness> {
+        return try {
+            if (currentBusiness?.uid != null) {
+                val movementPurchase = hashMapOf(
+                    "date" to resourceMovement.date,
+                    "amount" to resourceMovement.amount,
+                    "price" to resourceMovement.price,
+                    "typeMovement" to resourceMovement.typeMovement.type
+                )
+
+                var amount = resourceMovement.amount
+
+                val response = firestore.collection(businessCollection)
+                    .document(currentBusiness.uid ?: "")
+                    .collection(resourcesBusinessCollection)
+                    .document(resourceBusiness.documentReference!!)
+
+                response.get().addOnSuccessListener { document ->
+                    if (document != null && document.exists()) {
+                        amount += document.getLong("amount")!!
+
+                        response.update("amount", amount).addOnSuccessListener {
+                            Log.d(Util.TAG, "Amount updated, new value $amount")
+                        }.addOnFailureListener {
+                            Log.d(Util.TAG, "Amount NOT updated, new value $amount")
+                        }
+                    } else {
+                        Log.d(
+                            Util.TAG,
+                            "The document of resource to add new resources doesn't exist"
+                        )
+                    }
+                }.addOnFailureListener {
+                    Log.d(
+                        Util.TAG,
+                        "Error getting the document of resource to add new resources doesn't exist"
+                    )
+                }
+
+                response.collection(resourcesMovementsBusinessCollection).add(movementPurchase)
+                    .await()
+
+                resourceBusiness.amount = amount
+
+                Resource.Successful(resourceBusiness)
+            } else {
+                Resource.Error("Does not have UID")
+            }
+        } catch (e: Exception) {
+            Log.d(Util.TAG, "Exception: $e")
+            Resource.Error(e.message.toString())
+        }
+    }
+
+    override suspend fun deleteResourceBusiness(
+        currentBusiness: Business?,
+        resourceBusiness: ResourceBusiness
+    ): Resource<Boolean> {
+        return try {
+            if (currentBusiness?.uid != null) {
+                firestore.collection(businessCollection)
+                    .document(currentBusiness.uid ?: "")
+                    .collection(resourcesBusinessCollection)
+                    .document(resourceBusiness.documentReference!!).delete().await()
+
+                Resource.Successful(data = true)
+            } else {
+                Resource.Error(message = "Does not have UID", data = false)
+            }
+        } catch (e: Exception) {
+            Log.d(Util.TAG, "Exception: $e")
+            Resource.Error(e.message.toString())
+        }
+    }
+
+    override suspend fun updateResourceBusiness(
+        currentBusiness: Business?,
+        resourceBusiness: ResourceBusiness
+    ): Resource<ResourceBusiness> {
+        return try {
+            if (currentBusiness?.uid != null) {
+                val tableData: Map<String, Any> = hashMapOf(
+                    "name" to resourceBusiness.name,
+                    "minimumStock" to resourceBusiness.minStock.toLong(),
+                    "maximumStock" to resourceBusiness.maxStock.toLong(),
+                    "price" to resourceBusiness.price,
+                    "amount" to resourceBusiness.amount,
+                    "typeResource" to resourceBusiness.typeResourceEnum.type,
+                    "typeMeasurement" to resourceBusiness.typeMeasurementEnum.type
+                )
+
+                Log.d(Util.TAG, "Resource business data $tableData")
+                Log.d(Util.TAG, "Updating the resource")
+
+                firestore.collection(businessCollection)
+                    .document(currentBusiness.uid ?: "")
+                    .collection(resourcesBusinessCollection)
+                    .document(resourceBusiness.documentReference!!).update(tableData).await()
+
+                Resource.Successful(resourceBusiness)
+            } else {
+                Resource.Error("Does not have UID")
+            }
+        } catch (e: Exception) {
+            Log.d(Util.TAG, "Exception: $e")
+            Resource.Error(e.message.toString())
+        }
+    }
+
+    override suspend fun createResourceBusiness(
+        currentBusiness: Business?,
         resourceBusiness: ResourceBusiness
     ): Resource<ResourceBusiness> {
         return try {
             if (currentBusiness?.uid != null) {
                 val tableData = hashMapOf(
                     "name" to resourceBusiness.name,
-                    "type" to resourceBusiness.typeResourceEnum.type
+                    "minimumStock" to resourceBusiness.minStock.toLong(),
+                    "maximumStock" to resourceBusiness.maxStock.toLong(),
+                    "price" to resourceBusiness.price,
+                    "amount" to resourceBusiness.amount,
+                    "typeResource" to resourceBusiness.typeResourceEnum.type,
+                    "typeMeasurement" to resourceBusiness.typeMeasurementEnum.type
                 )
 
                 Log.d(Util.TAG, "Resource business data $tableData")
+                Log.d(Util.TAG, "Adding the resource")
 
                 val response = firestore.collection(businessCollection)
                     .document(currentBusiness.uid ?: "")
@@ -243,6 +366,7 @@ class FirestoreClient @Inject constructor() : APIClient {
                 Resource.Error("Does not have UID")
             }
         } catch (e: Exception) {
+            Log.d(Util.TAG, "Exception: $e")
             Resource.Error(e.message.toString())
         }
     }
@@ -258,14 +382,24 @@ class FirestoreClient @Inject constructor() : APIClient {
 
                     for (responseResource in snapshot.documents) {
                         val name = responseResource.getString("name")
-                        val status = responseResource.getString("type")
+                        val minimumStock = responseResource.getLong("minimumStock")
+                        val maximumStock = responseResource.getLong("maximumStock")
+                        val price = responseResource.getDouble("price")
+                        val amount = responseResource.getDouble("amount")
+                        val typeResource = responseResource.getString("typeResource")
+                        val typeMeasurement = responseResource.getString("typeMeasurement")
 
-                        if (name != null && status != null) {
+                        if (name != null && minimumStock != null && maximumStock != null && price != null && amount != null && typeResource != null && typeMeasurement != null) {
                             listResourcesBusiness.add(
                                 ResourceBusiness(
-                                    name,
-                                    Util.getTypeResource(status),
-                                    responseResource.id
+                                    name = name,
+                                    minStock = minimumStock.toShort(),
+                                    maxStock = maximumStock.toShort(),
+                                    price = price.toFloat(),
+                                    amount = amount.toFloat(),
+                                    typeResourceEnum = Util.getTypeResource(typeResource),
+                                    typeMeasurementEnum = Util.getTypeMeasurement(typeMeasurement),
+                                    documentReference = responseResource.id
                                 )
                             )
                         }
@@ -368,13 +502,31 @@ class FirestoreClient @Inject constructor() : APIClient {
                                             )
 
                                             val nameResource = resourceOfMenu.getString("name")
-                                            val typeResource = resourceOfMenu.getString("type")
+                                            val minimumStockResource =
+                                                resourceOfMenu.getLong("minimumStock")
+                                            val maximumStockResource =
+                                                resourceOfMenu.getLong("maximumStock")
+                                            val priceResource = resourceOfMenu.getDouble("price")
+                                            val amountResource = resourceOfMenu.getDouble("amount")
+                                            val typeResource =
+                                                resourceOfMenu.getString("typeResource")
+                                            val typeMeasurement =
+                                                resourceOfMenu.getString("typeMeasurement")
 
-                                            if (nameResource != null && typeResource != null) {
+                                            if (nameResource != null && minimumStockResource != null && maximumStockResource != null && priceResource != null && amountResource != null && typeResource != null && typeMeasurement != null) {
                                                 componentResourceOfMenu = ResourceBusiness(
-                                                    nameResource,
-                                                    Util.getTypeResource(typeResource),
-                                                    resourceOfMenu.id
+                                                    name = nameResource,
+                                                    minStock = minimumStockResource.toShort(),
+                                                    maxStock = maximumStockResource.toShort(),
+                                                    price = priceResource.toFloat(),
+                                                    amount = amountResource.toFloat(),
+                                                    typeResourceEnum = Util.getTypeResource(
+                                                        typeResource
+                                                    ),
+                                                    typeMeasurementEnum = Util.getTypeMeasurement(
+                                                        typeMeasurement
+                                                    ),
+                                                    documentReference = resourceOfMenu.id
                                                 )
 
                                                 Log.d(

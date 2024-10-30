@@ -45,13 +45,43 @@
     <!-- Recursos -->
     <string name="resources_title">Recursos</string>
     <string name="enter_resource_name_hint">Ingresa nombre del recurso</string>
+    <string name="enter_resource_price_purchase_hint">Ingresa el precio de compra del recurso</string>
+    <string name="enter_resource_price_sell_hint">Ingresa el precio de venta del recurso</string>
+    <string name="enter_resource_min_stock_hint">Ingresa el stock minimo del recurso</string>
+    <string name="enter_resource_max_stock_hint">Ingresa el stock maximo del recurso</string>
+    <string name="enter_resource_amount_hint">Ingresa la cantidad actual del recurso</string>
+    <string name="enter_resource_amount_to_add_hint">Ingresa la cantidad a añadir del recurso</string>
     <string name="add_new_resource">Agregar nuevo recurso</string>
+    <string name="update_resource">Actualizar recurso</string>
     <string name="enter_name_hint">Ingresa nombre del recurso</string>
     <string name="select_type_of_resource">Seleccionar tipo de recurso</string>
+    <string name="select_type_of_measurement">Seleccionar tipo de medida</string>
     <string name="add_button">Agregar</string>
     <string name="cancel_button">Cancelar</string>
     <string name="resource_added_successfully">Recurso agregado exitosamente</string>
-    <string name="error_adding_resource">Error al agregar el recurso</string>
+    <string name="resource_created_successfully">Recurso creado exitosamente</string>
+    <string name="resource_updated_successfully">Recurso actualizado exitosamente</string>
+    <string name="resource_deleted_successfully">Recurso eliminado exitosamente</string>
+    <string name="error_adding_resource">Error al agregar</string>
+    <string name="error_making_resource">Error al crear</string>
+    <string name="error_deleting_resource">Error al eliminar</string>
+    <string name="error_updating_resource">Error al actualizar</string>
+    <string name="kilograms_measurement">Kilogramos</string>
+    <string name="liters_measurement">Litros</string>
+    <string name="units_measurement">Unidades</string>
+    <string name="only_numbers">Solo numeros</string>
+
+    <string name="resource_name_hint">Nombre</string>
+    <string name="resource_price_purchase_hint">Precio</string>
+    <string name="resource_type_resource_hint">Tipo de recurso</string>
+    <string name="resource_type_measurement_hint">Tipo de medida</string>
+    <string name="resource_min_stock_hint">Stock minimo</string>
+    <string name="resource_max_stock_hint">Stock maximo</string>
+    <string name="resource_amount_hint">Cantidad</string>
+    <string name="close">Cerrar</string>
+    <string name="accept">Aceptar</string>
+    <string name="message_to_delete">¿Estas seguro de eliminar %1$s?</string>
+    <string name="message_suggest_update_the_price">El costo por unidad de este recurso en la compra es mayor que su precio de venta actual. Se recomienda actualizar el precio de venta para evitar pérdidas</string>
 
     <!-- Tables -->
     <string name="tables_title">Mesas</string>

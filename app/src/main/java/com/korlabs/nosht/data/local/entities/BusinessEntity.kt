@@ -4,6 +4,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.korlabs.nosht.domain.model.ResourceBusiness
 import com.korlabs.nosht.domain.model.enums.MenuStatusEnum
+import com.korlabs.nosht.domain.model.enums.TypeMeasurementEnum
+import com.korlabs.nosht.domain.model.enums.TypeResourceEnum
 import com.korlabs.nosht.domain.model.enums.employee.EmployerStatusEnum
 import com.korlabs.nosht.domain.model.enums.employee.TypeEmployeeRoleEnum
 
@@ -50,7 +52,12 @@ data class ResourceEntity(
     @PrimaryKey val id: String,
     val userId: String,
     val name: String,
-    val type: String
+    var minStock: Short,
+    var maxStock: Short,
+    var price: Float,
+    var amount: Float,
+    var typeMeasurement: String,
+    val type: String,
 )
 
 @Entity(tableName = "MenuEntity")

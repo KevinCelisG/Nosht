@@ -7,7 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.korlabs.nosht.domain.model.ResourceBusiness
-import com.korlabs.nosht.domain.repository.AuthRepository
+import com.korlabs.nosht.domain.model.ResourceMovement
 import com.korlabs.nosht.domain.repository.ResourcesRepository
 import com.korlabs.nosht.util.Resource
 import com.korlabs.nosht.util.Util
@@ -24,8 +24,23 @@ class ResourceViewModel @Inject constructor(
 
     fun onEvent(resourceEvent: ResourceEvent) {
         when (resourceEvent) {
+            is ResourceEvent.Create -> {
+                createResourceBusiness(resourceEvent.resourceBusiness)
+            }
+
+            is ResourceEvent.Delete -> {
+                deleteResourceBusiness(resourceEvent.resourceBusiness)
+            }
+
             is ResourceEvent.Add -> {
-                addResourceBusiness(resourceEvent.resourceBusiness)
+                addResourceBusiness(
+                    resourceEvent.resourceBusiness,
+                    resourceEvent.resourceMovement
+                )
+            }
+
+            is ResourceEvent.Update -> {
+                updateResourceBusiness(resourceEvent.resourceBusiness)
             }
 
             is ResourceEvent.GetRemoteResourceBusiness -> {
@@ -38,9 +53,97 @@ class ResourceViewModel @Inject constructor(
         }
     }
 
-    private fun addResourceBusiness(resourceBusiness: ResourceBusiness) {
+    private fun deleteResourceBusiness(
+        resourceBusiness: ResourceBusiness
+    ) {
         viewModelScope.launch {
-            repository.addResourceBusiness(resourceBusiness).collect { result ->
+            repository.deleteResourceBusiness(resourceBusiness)
+                .collect { result ->
+                    state = when (result) {
+                        is Resource.Successful -> {
+                            Log.d(Util.TAG, "Successful ${result.data}")
+                            state.copy(resourceBusiness = resourceBusiness, isNewRemoteResources = true)
+                        }
+
+                        is Resource.Error -> {
+                            Log.d(
+                                Util.TAG,
+                                result.message
+                                    ?: "Error deleting the resource ${resourceBusiness.documentReference}"
+                            )
+                            state.copy(resourceBusiness = null)
+                        }
+
+                        is Resource.Loading -> {
+                            state.copy(isLoading = result.isLoading)
+                        }
+                    }
+                }
+        }
+    }
+
+    private fun updateResourceBusiness(
+        resourceBusiness: ResourceBusiness
+    ) {
+        viewModelScope.launch {
+            repository.updateResourceBusiness(resourceBusiness)
+                .collect { result ->
+                    state = when (result) {
+                        is Resource.Successful -> {
+                            Log.d(Util.TAG, "Successful ${result.data}")
+                            state.copy(resourceBusiness = result.data, isNewRemoteResources = true)
+                        }
+
+                        is Resource.Error -> {
+                            Log.d(
+                                Util.TAG,
+                                result.message
+                                    ?: "Error updating a resource ${resourceBusiness.documentReference}"
+                            )
+                            state.copy(resourceBusiness = null)
+                        }
+
+                        is Resource.Loading -> {
+                            state.copy(isLoading = result.isLoading)
+                        }
+                    }
+                }
+        }
+    }
+
+    private fun addResourceBusiness(
+        resourceBusiness: ResourceBusiness,
+        resourceMovement: ResourceMovement
+    ) {
+        viewModelScope.launch {
+            repository.addResourceBusiness(resourceBusiness, resourceMovement)
+                .collect { result ->
+                    state = when (result) {
+                        is Resource.Successful -> {
+                            Log.d(Util.TAG, "Successful ${result.data}")
+                            state.copy(resourceBusiness = result.data, isNewRemoteResources = true)
+                        }
+
+                        is Resource.Error -> {
+                            Log.d(
+                                Util.TAG,
+                                result.message
+                                    ?: "Error adding a resource ${resourceBusiness.documentReference}"
+                            )
+                            state.copy(resourceBusiness = null)
+                        }
+
+                        is Resource.Loading -> {
+                            state.copy(isLoading = result.isLoading)
+                        }
+                    }
+                }
+        }
+    }
+
+    private fun createResourceBusiness(resourceBusiness: ResourceBusiness) {
+        viewModelScope.launch {
+            repository.createResourceBusiness(resourceBusiness).collect { result ->
                 state = when (result) {
                     is Resource.Successful -> {
                         Log.d(Util.TAG, "Successful ${result.data}")
@@ -48,7 +151,10 @@ class ResourceViewModel @Inject constructor(
                     }
 
                     is Resource.Error -> {
-                        Log.d(Util.TAG, result.message ?: "Error adding a table $resourceBusiness")
+                        Log.d(
+                            Util.TAG,
+                            result.message ?: "Error making a resource $resourceBusiness"
+                        )
                         state.copy(resourceBusiness = null)
                     }
 

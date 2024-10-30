@@ -2,6 +2,7 @@ package com.korlabs.nosht.data.local
 
 import android.util.Log
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -76,6 +77,9 @@ interface NoshtDao {
     // Resource
     @Query("DELETE FROM ResourceEntity")
     suspend fun deleteAllResources()
+
+    @Delete
+    suspend fun deleteAResource(resource: ResourceEntity)
 
     @Query("SELECT * FROM ResourceEntity WHERE userId = :businessId")
     suspend fun getResourcesByBusinessId(businessId: String): List<ResourceEntity>
