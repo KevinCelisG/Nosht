@@ -661,14 +661,16 @@ fun ResourcesScreen(
         }
     })
 
-    LaunchedEffect(key1 = state.resourceBusiness, block = {
-        if (processDeleteResource) {
+    LaunchedEffect(key1 = state.isLoading, block = {
+        if (processDeleteResource && !state.isLoading) {
             if (state.resourceBusiness != null) {
                 Toast.makeText(
                     context,
                     context.getString(R.string.resource_deleted_successfully),
                     Toast.LENGTH_SHORT
                 ).show()
+
+                showDialogDeleteResource = false
             } else {
                 Toast.makeText(
                     context,
@@ -676,7 +678,6 @@ fun ResourcesScreen(
                     Toast.LENGTH_SHORT
                 ).show()
             }
-            showDialogDeleteResource = false
             processDeleteResource = false
         }
     })

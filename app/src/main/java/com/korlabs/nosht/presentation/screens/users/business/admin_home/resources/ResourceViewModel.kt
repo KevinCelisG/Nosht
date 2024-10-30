@@ -62,7 +62,11 @@ class ResourceViewModel @Inject constructor(
                     state = when (result) {
                         is Resource.Successful -> {
                             Log.d(Util.TAG, "Successful ${result.data}")
-                            state.copy(resourceBusiness = resourceBusiness, isNewRemoteResources = true)
+                            state.copy(
+                                resourceBusiness = resourceBusiness,
+                                isNewRemoteResources = true,
+                                isLoading = false
+                            )
                         }
 
                         is Resource.Error -> {
