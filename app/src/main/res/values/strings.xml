@@ -82,6 +82,8 @@
     <string name="accept">Aceptar</string>
     <string name="message_to_delete">¿Estas seguro de eliminar %1$s?</string>
     <string name="message_suggest_update_the_price">El costo por unidad de este recurso en la compra es mayor que su precio de venta actual. Se recomienda actualizar el precio de venta para evitar pérdidas</string>
+    <string name="need_to_be_more_than_zero">Tiene que ser mayor a 0</string>
+    <string name="need_to_be_less_or_equal_that_the_current_amount">Tiene que ser menor o igual a la cantidad actual</string>
 
     <!-- Tables -->
     <string name="tables_title">Mesas</string>

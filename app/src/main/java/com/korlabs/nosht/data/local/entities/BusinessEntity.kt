@@ -73,5 +73,6 @@ data class MenuEntity(
 @Entity(tableName = "MenuResourceCrossRefEntity", primaryKeys = ["menuId", "resourceId"])
 data class MenuResourceCrossRefEntity(
     val menuId: String,
-    val resourceId: String
+    val resourceId: String,
+    val amount: Float
 )

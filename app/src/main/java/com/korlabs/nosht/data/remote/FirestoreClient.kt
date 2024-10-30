@@ -16,6 +16,7 @@ import com.korlabs.nosht.domain.model.Contract
 import com.korlabs.nosht.domain.model.Menu
 import com.korlabs.nosht.domain.model.ResourceBusiness
 import com.korlabs.nosht.domain.model.ResourceMovement
+import com.korlabs.nosht.domain.model.ResourceWithAmountInMenu
 import com.korlabs.nosht.domain.model.Table
 import com.korlabs.nosht.domain.model.enums.TypeUserEnum
 import com.korlabs.nosht.domain.model.enums.employee.CodeStatusEnum
@@ -433,7 +434,8 @@ class FirestoreClient @Inject constructor() : APIClient {
 
                 for (resource in menu.listResourceBusiness) {
                     val resourceData = hashMapOf(
-                        "documentReference" to resource.documentReference
+                        "documentReference" to resource.resourceBusiness.documentReference,
+                        "amount" to resource.resourceBusiness.amount
                     )
 
                     firestore.collection(businessCollection)
@@ -476,13 +478,15 @@ class FirestoreClient @Inject constructor() : APIClient {
                                         .get()
                                         .await() // Utiliza await() para esperar a que la tarea se complete
 
-                                val listResourceOfMenu = mutableListOf<ResourceBusiness>()
+                                val listResourceOfMenu = mutableListOf<ResourceWithAmountInMenu>()
 
                                 // Iterar sobre los recursos del menú
                                 for (currentResource in resource.documents) {
                                     if (currentResource != null) {
                                         val documentReference =
                                             currentResource.getString("documentReference")
+                                        val amountResourceInMenu =
+                                            currentResource.getLong("amount")!!.toFloat()
 
                                         if (documentReference != null) {
                                             var componentResourceOfMenu: ResourceBusiness? = null
@@ -536,7 +540,12 @@ class FirestoreClient @Inject constructor() : APIClient {
                                             }
 
                                             if (componentResourceOfMenu != null) {
-                                                listResourceOfMenu.add(componentResourceOfMenu)
+                                                listResourceOfMenu.add(
+                                                    ResourceWithAmountInMenu(
+                                                        componentResourceOfMenu,
+                                                        amountResourceInMenu
+                                                    )
+                                                )
                                             }
                                         }
                                     }

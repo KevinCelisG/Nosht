@@ -32,6 +32,7 @@ import com.korlabs.nosht.data.remote.FirestoreClient
 import com.korlabs.nosht.domain.model.Contract
 import com.korlabs.nosht.domain.model.Menu
 import com.korlabs.nosht.domain.model.ResourceBusiness
+import com.korlabs.nosht.domain.model.ResourceWithAmountInMenu
 import com.korlabs.nosht.domain.model.enums.TypeUserEnum
 import com.korlabs.nosht.domain.model.enums.employee.EmployerStatusEnum
 import com.korlabs.nosht.domain.model.enums.employee.TypeEmployeeRoleEnum
@@ -91,12 +92,13 @@ class MenusRepositoryImpl @Inject constructor(
 
                         for (menu in apiClient.dataMenus.value?.data!!) {
                             listMenus.add(menu.toMenuEntity(AuthRepositoryImpl.currentBusinessUid!!))
-                            for (resource in menu.listResourceBusiness) {
-                                if (menu.documentReference != null && resource.documentReference != null) {
+                            for (item in menu.listResourceBusiness) {
+                                if (menu.documentReference != null) {
                                     listMenusResources.add(
                                         MenuResourceCrossRefEntity(
-                                            menu.documentReference!!,
-                                            resource.documentReference!!
+                                            menuId = menu.documentReference!!,
+                                            resourceId = item.resourceBusiness.documentReference!!,
+                                            amount = item.amount
                                         )
                                     )
                                 }
@@ -149,17 +151,23 @@ class MenusRepositoryImpl @Inject constructor(
             for (menu in dao.getMenusByBusinessId(AuthRepositoryImpl.currentBusinessUid!!)) {
                 Log.d(Util.TAG, "Get local menu ${menu.name} - ${menu.userId}")
 
-                val listResourcesOfMenu = mutableListOf<ResourceBusiness>()
+                val listResourcesOfMenu = mutableListOf<ResourceWithAmountInMenu>()
 
                 for (resourceOfMenu in dao.getResourceByMenuId(menu.id)) {
                     Log.d(Util.TAG, "Getting local menu resources ${resourceOfMenu.resourceId}")
 
                     val resourceFromLocal =
                         dao.getResourceById(resourceOfMenu.resourceId).toResourceBusiness()
+                    val amountFromLocal = resourceOfMenu.amount
 
                     Log.d(Util.TAG, "The local resource menu is $resourceFromLocal")
 
-                    listResourcesOfMenu.add(resourceFromLocal)
+                    listResourcesOfMenu.add(
+                        ResourceWithAmountInMenu(
+                            resourceFromLocal,
+                            amountFromLocal
+                        )
+                    )
                 }
 
                 Log.d(Util.TAG, "Converting the menuLocal to menuModel")

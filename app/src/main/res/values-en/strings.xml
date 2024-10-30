@@ -83,6 +83,8 @@
     <string name="accept">Accept</string>
     <string name="message_to_delete">Are you sure to delete %1$s?</string>
     <string name="message_suggest_update_the_price">The unit cost of this item in the purchase is higher than its current sale price. We recommend updating the sale price to avoid potential losses</string>
+    <string name="need_to_be_more_than_zero">Have to be more than 0</string>
+    <string name="need_to_be_less_or_equal_that_the_current_amount">Need to be less or equal that the current amount</string>
 
     <!-- Tables -->
     <string name="tables_title">Tables</string>

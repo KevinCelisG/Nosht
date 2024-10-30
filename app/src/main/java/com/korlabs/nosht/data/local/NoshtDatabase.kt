@@ -20,7 +20,7 @@ import com.korlabs.nosht.data.local.entities.TableEntity
         MenuEntity::class,
         MenuResourceCrossRefEntity::class
     ],
-    version = 10
+    version = 11
 )
 abstract class NoshtDatabase : RoomDatabase() {
     abstract val dao: NoshtDao

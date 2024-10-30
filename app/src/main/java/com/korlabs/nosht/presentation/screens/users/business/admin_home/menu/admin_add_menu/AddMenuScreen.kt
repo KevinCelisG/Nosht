@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.sp
 import com.korlabs.nosht.R
 import com.korlabs.nosht.domain.model.Menu
 import com.korlabs.nosht.domain.model.ResourceBusiness
+import com.korlabs.nosht.domain.model.ResourceWithAmountInMenu
 import com.korlabs.nosht.domain.model.enums.MenuStatusEnum
 import com.korlabs.nosht.domain.model.enums.TypeResourceEnum
 import com.korlabs.nosht.navigation.Screen
@@ -57,6 +58,7 @@ import com.korlabs.nosht.presentation.components.resourcesBusiness.TypeResourceI
 import com.korlabs.nosht.presentation.components.text.TextButtonCustom
 import com.korlabs.nosht.presentation.components.text.TextSubtitleCustom
 import com.korlabs.nosht.presentation.components.text_field.TextFieldCustom
+import com.korlabs.nosht.presentation.components.text_field.TextFieldFloatCustom
 import com.korlabs.nosht.presentation.screens.users.business.admin_home.menu.MenuEvent
 import com.korlabs.nosht.presentation.screens.users.business.admin_home.menu.MenuViewModel
 import com.korlabs.nosht.presentation.screens.users.business.admin_home.resources.ResourceEvent
@@ -78,13 +80,18 @@ fun AddMenuScreen(
     val stateResource = resourceViewModel.state
 
     var showDialog by remember { mutableStateOf(false) }
+    var showDialogAddResource by remember { mutableStateOf(false) }
+
+    var currentResource: ResourceBusiness? by remember { mutableStateOf(null) }
+
     var addMenu by remember { mutableStateOf(false) }
     var processAddMenu by remember { mutableStateOf(false) }
 
     var selectedTypeResource by rememberSaveable { mutableStateOf(TypeResourceEnum.FOOD) }
-    val listResourceItemsSelected = remember { mutableStateListOf<ResourceBusiness>() }
+    val listResourceItemsSelected = remember { mutableStateListOf<ResourceWithAmountInMenu>() }
     var nameMenu by remember { mutableStateOf("") }
     var priceMenu by remember { mutableFloatStateOf(0f) }
+    var amountResourceToAdd: Float by remember { mutableStateOf(0.0f) }
 
     val listTypeResourceEnum = listOf(
         TypeResourceEnum.FOOD,
@@ -147,34 +154,37 @@ fun AddMenuScreen(
                     if (stateResource.listResourceBusiness[it].typeResourceEnum == selectedTypeResource) {
                         ResourceExtendItem(
                             stateResource.listResourceBusiness[it],
-                            listResourceItemsSelected.contains(stateResource.listResourceBusiness[it])
+                            listResourceItemsSelected.any { item ->
+                                item.resourceBusiness == stateResource.listResourceBusiness[it]
+                            }
                         ) { resourceBusiness ->
                             if (isDynamic) {
-                                if (!listResourceItemsSelected.contains(resourceBusiness)) {
-                                    listResourceItemsSelected.add(resourceBusiness)
+                                if (!listResourceItemsSelected.any { item -> item.resourceBusiness == resourceBusiness }) {
+                                    currentResource = resourceBusiness
+                                    showDialogAddResource = true
                                 } else {
-                                    listResourceItemsSelected.remove(resourceBusiness)
+                                    listResourceItemsSelected.removeAll { item -> item.resourceBusiness == resourceBusiness }
                                 }
                             } else {
-                                if (listResourceItemsSelected.any { resource -> resource.typeResourceEnum == resourceBusiness.typeResourceEnum }) {
-                                    Toast.makeText(
-                                        context,
-                                        context.getString(R.string.static_menu_limit_warning),
-                                        Toast.LENGTH_SHORT
-                                    )
-                                        .show()
-                                } else {
-                                    if (!listResourceItemsSelected.contains(resourceBusiness)) {
-                                        listResourceItemsSelected.add(resourceBusiness)
+                                if (!listResourceItemsSelected.any { item -> item.resourceBusiness == resourceBusiness }) {
+                                    if (listResourceItemsSelected.any { item -> item.resourceBusiness.typeResourceEnum == resourceBusiness.typeResourceEnum }) {
+                                        Toast.makeText(
+                                            context,
+                                            context.getString(R.string.static_menu_limit_warning),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
                                     } else {
-                                        listResourceItemsSelected.remove(resourceBusiness)
+                                        currentResource = resourceBusiness
+                                        showDialogAddResource = true
                                     }
+                                } else {
+                                    listResourceItemsSelected.removeAll { item -> item.resourceBusiness == resourceBusiness }
                                 }
                             }
-                            Log.d(Util.TAG, listResourceItemsSelected.toString())
                         }
-                        Spacer(modifier = Modifier.width(10.dp))
+                        Log.d(Util.TAG, listResourceItemsSelected.toString())
                     }
+                    Spacer(modifier = Modifier.width(10.dp))
                 }
             }
         }
@@ -256,6 +266,69 @@ fun AddMenuScreen(
                 dismissButton = {
                     Button(
                         onClick = { showDialog = false }
+                    ) {
+                        Text(stringResource(id = R.string.cancel))
+                    }
+                }
+            )
+        }
+
+        if (showDialogAddResource) {
+            AlertDialog(
+                onDismissRequest = { },
+                title = {
+                    Text(text = currentResource!!.name, fontSize = 20.sp)
+                },
+                text = {
+                    Column {
+                        TextFieldFloatCustom(
+                            value = amountResourceToAdd.toString(),
+                            onValueChange = { amountResourceToAdd = it },
+                            hint = stringResource(id = R.string.enter_resource_amount_to_add_hint)
+                        )
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            if (amountResourceToAdd > 1) {
+                                if (amountResourceToAdd < currentResource!!.amount) {
+                                    showDialogAddResource = false
+                                    listResourceItemsSelected.add(
+                                        ResourceWithAmountInMenu(
+                                            currentResource!!,
+                                            amountResourceToAdd
+                                        )
+                                    )
+                                    Toast.makeText(
+                                        context,
+                                        context.getString(R.string.resource_added_successfully),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+
+                                    amountResourceToAdd = 0f
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        context.getString(R.string.need_to_be_less_or_equal_that_the_current_amount),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    context.getString(R.string.need_to_be_more_than_zero),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    ) {
+                        Text(stringResource(id = R.string.add))
+                    }
+                },
+                dismissButton = {
+                    Button(
+                        onClick = { showDialogAddResource = false }
                     ) {
                         Text(stringResource(id = R.string.cancel))
                     }
