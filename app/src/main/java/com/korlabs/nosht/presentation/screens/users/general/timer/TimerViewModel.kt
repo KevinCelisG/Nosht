@@ -16,9 +16,12 @@ class TimerViewModel @Inject constructor() : ViewModel() {
 
     private val _timeLeft = MutableStateFlow(120)
     val timeLeft: StateFlow<Int> = _timeLeft
-    private lateinit var timer: CountDownTimer
+    private var timer: CountDownTimer? = null
 
     fun startTimer() {
+        _timeLeft.value = 120
+        timer?.cancel()
+
         timer = object : CountDownTimer(120000, 1000) { // 300000ms = 1 minute, 1000ms = 1 second
             override fun onTick(millisUntilFinished: Long) {
                 _timeLeft.value = (millisUntilFinished / 1000).toInt()
@@ -33,9 +36,9 @@ class TimerViewModel @Inject constructor() : ViewModel() {
     }
 
     fun finishTimer() {
-        Log.d(Util.TAG, "FFinish timer")
+        Log.d(Util.TAG, "Finish timer")
 
-        timer.cancel()
+        timer?.cancel()
         _timeLeft.value = 0
     }
 }

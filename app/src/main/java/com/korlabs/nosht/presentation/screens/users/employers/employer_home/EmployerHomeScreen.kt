@@ -226,8 +226,8 @@ fun EmployerHomeScreen(
         })
     }
 
-    LaunchedEffect(key1 = contractsViewModel.isNewRemoteContracts) {
-        if (contractsViewModel.isNewRemoteContracts) {
+    LaunchedEffect(key1 = state.isNewRemoteContracts) {
+        if (state.isNewRemoteContracts) {
             Log.d(Util.TAG, "There are a new remote data contracts")
             contractsViewModel.onEvent(ContractsEvent.GetLocalContracts)
         }

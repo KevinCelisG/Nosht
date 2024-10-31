@@ -647,13 +647,14 @@ class FirestoreClient @Inject constructor() : APIClient {
 
                             if (uidEmployer != null) {
                                 Log.d(Util.TAG, "Employer joined $uidEmployer")
-                                _isJoinEmployer.value = Resource.Successful("Successful")
 
                                 addMatchHistory(
                                     business,
                                     uidEmployer,
                                     Util.getEmployerRole(role!!)
                                 )
+
+                                _isJoinEmployer.value = Resource.Successful("Successful")
 
                                 listenerEmployerResponse.remove()
                             }

@@ -238,7 +238,7 @@ fun AdminManageEmployersScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(10.dp)
-                            //.align(Alignment.CenterHorizontally)
+                        //.align(Alignment.CenterHorizontally)
                     ) {
                         Text(
                             text = state.code!!,
@@ -289,19 +289,9 @@ fun AdminManageEmployersScreen(
 
     LaunchedEffect(key1 = createCodeToAddEmployer) {
         if (createCodeToAddEmployer) {
-            if (selectedRoleEmployer != null) {
-                Log.d(Util.TAG, "Launch the code")
-                contractsViewModel.onEvent(ContractsEvent.Add(selectedRoleEmployer!!))
-                processCreateCode = true
-            } else {
-                Toast.makeText(
-                    context,
-                    context.getString(R.string.fill_all_fields),
-                    Toast.LENGTH_SHORT
-                )
-                    .show()
-                isButtonCreateCodeEnabled = true
-            }
+            Log.d(Util.TAG, "Launch the code")
+            contractsViewModel.onEvent(ContractsEvent.Add(selectedRoleEmployer))
+            processCreateCode = true
             createCodeToAddEmployer = false
         }
     }
@@ -339,8 +329,7 @@ fun AdminManageEmployersScreen(
                         context,
                         context.getString(R.string.employer_joined_successfully),
                         Toast.LENGTH_SHORT
-                    )
-                        .show()
+                    ).show()
                     contractsViewModel.onEvent(ContractsEvent.DisabilityCode)
                     timerViewModel.finishTimer()
                 } else {
@@ -356,8 +345,8 @@ fun AdminManageEmployersScreen(
         }
     }
 
-    LaunchedEffect(key1 = contractsViewModel.isNewRemoteContracts) {
-        if (contractsViewModel.isNewRemoteContracts) {
+    LaunchedEffect(key1 = state.isNewRemoteContracts) {
+        if (state.isNewRemoteContracts) {
             Log.d(Util.TAG, "There are a new remote data contracts")
             contractsViewModel.onEvent(ContractsEvent.GetLocalContracts)
         }

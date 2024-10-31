@@ -20,8 +20,6 @@ class ContractsViewModel @Inject constructor(
     private val repository: ContractsRepository
 ) : ViewModel() {
 
-    var isNewRemoteContracts: Boolean = false
-
     var state by mutableStateOf(ContractsState())
     private var currentCode: String = ""
 
@@ -79,7 +77,7 @@ class ContractsViewModel @Inject constructor(
                 state = when (result) {
                     is Resource.Successful -> {
                         Log.d(Util.TAG, "Successful ${result.data}")
-                        state.copy(code = currentCode, isNewRemoteContracts = true)
+                        state.copy(code = currentCode)
                     }
 
                     is Resource.Error -> {

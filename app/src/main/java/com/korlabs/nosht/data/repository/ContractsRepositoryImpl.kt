@@ -108,8 +108,6 @@ class ContractsRepositoryImpl @Inject constructor(
 
         // It can be better
         if (AuthRepositoryImpl.currentUser != null) {
-            Log.d(Util.TAG, "Getting remote contracts")
-
             apiClient.getContracts(AuthRepositoryImpl.currentUser!!)
 
             _data.value = Resource.Loading(true)
@@ -125,8 +123,8 @@ class ContractsRepositoryImpl @Inject constructor(
                         }
 
                         CoroutineScope(Dispatchers.IO).launch {
-                            dao.deleteAllContracts()
-                            Log.d(Util.TAG, "DeleteAllContracts")
+                            /*dao.deleteAllContracts()
+                            Log.d(Util.TAG, "DeleteAllContracts")*/
                             listContracts.forEach {
                                 Log.d(Util.TAG, "Insert local contract ${it.userUid}")
                             }

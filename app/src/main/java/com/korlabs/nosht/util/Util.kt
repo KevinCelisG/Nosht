@@ -1,5 +1,9 @@
 package com.korlabs.nosht.util
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import com.korlabs.nosht.NoshtApplication
 import com.korlabs.nosht.domain.model.enums.MenuStatusEnum
 import com.korlabs.nosht.domain.model.enums.TableStatusEnum
 import com.korlabs.nosht.domain.model.enums.TypeMeasurementEnum
@@ -82,20 +86,15 @@ class Util {
         }
 
         fun generateUniqueCode(): String {
-            // Get the current time in milliseconds
-            val currentTime = Date().time
+            val currentTimeNano = System.nanoTime()
 
-            // Create a hash using a simple mathematical operation
-            val hash = abs(currentTime.hashCode())
+            val hash = abs(currentTimeNano.hashCode())
 
-            // Convert the hash to a 4-digit string
-            val shortHash = (hash % 10000).toString().padStart(4, '0')
+            val timePart = (hash % 1000).toString().padStart(3, '0')
 
-            // Add a random 2-digit number
-            val randomPart = Random.nextInt(10, 99)
+            val randomPart = Random.nextInt(100, 999)
 
-            // Combine the hashed time and random part to get a 6-figure code
-            return "$shortHash$randomPart"
+            return "$timePart$randomPart"
         }
     }
 }
