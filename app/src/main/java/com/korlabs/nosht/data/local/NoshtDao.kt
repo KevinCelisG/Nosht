@@ -55,6 +55,9 @@ interface NoshtDao {
     @Query("DELETE FROM TableEntity")
     suspend fun deleteAllTables()
 
+    @Delete
+    suspend fun deleteTables(tablesToRemove: List<TableEntity>)
+
     @Query("SELECT * FROM TableEntity WHERE userId = :businessId")
     suspend fun getTablesByBusinessId(businessId: String): List<TableEntity>
 
@@ -67,6 +70,9 @@ interface NoshtDao {
     // Contracts
     @Query("DELETE FROM ContractEntity")
     suspend fun deleteAllContracts()
+
+    @Delete
+    suspend fun deleteContracts(contractsToRemove: List<ContractEntity>)
 
     @Query("SELECT * FROM ContractEntity WHERE userId = :userId")
     suspend fun getContractsByUserId(userId: String): List<ContractEntity>
@@ -81,6 +87,9 @@ interface NoshtDao {
     @Delete
     suspend fun deleteAResource(resource: ResourceEntity)
 
+    @Delete
+    suspend fun deleteResources(resourcesToRemove: List<ResourceEntity>)
+
     @Query("SELECT * FROM ResourceEntity WHERE userId = :businessId")
     suspend fun getResourcesByBusinessId(businessId: String): List<ResourceEntity>
 
@@ -94,6 +103,9 @@ interface NoshtDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMenus(menus: List<MenuEntity>)
 
+    @Delete
+    suspend fun deleteMenus(menusToRemove: List<MenuEntity>)
+
     @Query("SELECT * FROM MenuResourceCrossRefEntity WHERE menuId = :menuId")
     suspend fun getResourceByMenuId(menuId: String): List<MenuResourceCrossRefEntity>
 
@@ -103,6 +115,8 @@ interface NoshtDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMenuResourceCrossRef(menuResourceCrossRefEntity: List<MenuResourceCrossRefEntity>)
 
+    @Query("DELETE FROM MenuResourceCrossRefEntity WHERE menuId IN (:menusResourceCrossRefToRemove)")
+    suspend fun deleteMenusResourceCrossRef(menusResourceCrossRefToRemove: List<String>)
 
     /*@Query(
         """

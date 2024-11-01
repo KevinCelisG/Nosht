@@ -435,7 +435,7 @@ class FirestoreClient @Inject constructor() : APIClient {
                 for (resource in menu.listResourceBusiness) {
                     val resourceData = hashMapOf(
                         "documentReference" to resource.resourceBusiness.documentReference,
-                        "amount" to resource.resourceBusiness.amount
+                        "amount" to resource.amount
                     )
 
                     firestore.collection(businessCollection)
@@ -566,7 +566,7 @@ class FirestoreClient @Inject constructor() : APIClient {
                             }
                         }
 
-                        Log.d(Util.TAG, "Update menus data $listMenus")
+                        Log.d(Util.TAG, "Update menus data: $listMenus")
                         // Actualiza el estado en el hilo principal
                         withContext(Dispatchers.Main) {
                             isNewMenusData = true

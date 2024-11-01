@@ -106,6 +106,10 @@ class MenusRepositoryImpl @Inject constructor(
                         }
 
                         CoroutineScope(Dispatchers.IO).launch {
+                            val localMenus = dao.getMenusByBusinessId(AuthRepositoryImpl.currentBusinessUid!!)
+                            val remoteMenusId = listMenus.map { it.id }
+
+                            val menusToRemove = localMenus.filter { it.id !in remoteMenusId }
                             // The idea is leave the needed of delete the local records
                             //dao.deleteAllResources()
                             //Log.d(Util.TAG, "deleteAllResources")
@@ -113,6 +117,8 @@ class MenusRepositoryImpl @Inject constructor(
                             Log.d(Util.TAG, "Insert remote menu $listMenus")
                             Log.d(Util.TAG, "Insert remote resource in menus $listMenusResources")
 
+                            dao.deleteMenusResourceCrossRef(menusToRemove.map { it.id })
+                            dao.deleteMenus(menusToRemove)
                             dao.insertMenus(listMenus)
                             dao.insertMenuResourceCrossRef(listMenusResources)
 

@@ -123,11 +123,12 @@ class ContractsRepositoryImpl @Inject constructor(
                         }
 
                         CoroutineScope(Dispatchers.IO).launch {
-                            /*dao.deleteAllContracts()
-                            Log.d(Util.TAG, "DeleteAllContracts")*/
-                            listContracts.forEach {
-                                Log.d(Util.TAG, "Insert local contract ${it.userUid}")
-                            }
+                            val localContracts = dao.getContractsByUserId(AuthRepositoryImpl.currentUser!!.uid!!)
+                            val remoteContractsId = listContracts.map { it.id }
+
+                            val contractsToRemove = localContracts.filter { it.id !in remoteContractsId}
+
+                            dao.deleteContracts(contractsToRemove)
                             dao.insertContracts(listContracts)
                             _data.postValue(Resource.Successful())
 

@@ -98,7 +98,7 @@ class MenuViewModel @Inject constructor(
                     }
 
                     is Resource.Error -> {
-                        Log.d(Util.TAG, result.message ?: "Error getting local contracs")
+                        Log.d(Util.TAG, result.message ?: "Error getting local menus")
                         state.copy(listMenus = emptyList())
                     }
 

@@ -158,15 +158,12 @@ class ResourcesRepositoryImpl @Inject constructor(
                         }
 
                         CoroutineScope(Dispatchers.IO).launch {
-                            //dao.deleteAllResources()
-                            //Log.d(Util.TAG, "deleteAllResources")
+                            val localResources = dao.getResourcesByBusinessId(AuthRepositoryImpl.currentBusinessUid!!)
+                            val remoteResourcesId = listResources.map { it.id }
 
-                            listResources.forEach { _ ->
-                                Log.d(
-                                    Util.TAG,
-                                    "Insert local resource in $AuthRepositoryImpl.currentBusinessUid"
-                                )
-                            }
+                            val resourcesToRemove = localResources.filter { it.id !in remoteResourcesId }
+
+                            dao.deleteResources(resourcesToRemove)
                             dao.insertResources(listResources)
                             _data.postValue(Resource.Successful())
                         }

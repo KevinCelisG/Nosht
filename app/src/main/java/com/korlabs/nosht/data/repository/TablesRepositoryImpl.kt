@@ -79,15 +79,12 @@ class TablesRepositoryImpl @Inject constructor(
                         }
 
                         CoroutineScope(Dispatchers.IO).launch {
-                            //dao.deleteAllTables()
-                            //Log.d(Util.TAG, "DeleteAllTables")
+                            val localTables = dao.getTablesByBusinessId(AuthRepositoryImpl.currentBusinessUid!!)
+                            val remoteTablesId = listTables.map { it.id }
 
-                            listTables.forEach { _ ->
-                                Log.d(
-                                    Util.TAG,
-                                    "Insert local table in ${AuthRepositoryImpl.currentBusinessUid}"
-                                )
-                            }
+                            val tablesToRemove = localTables.filter { it.id !in remoteTablesId }
+
+                            dao.deleteTables(tablesToRemove)
                             dao.insertTables(listTables)
                             _data.postValue(Resource.Successful())
 
