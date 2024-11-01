@@ -3,40 +3,18 @@ package com.korlabs.nosht.data.repository
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.korlabs.nosht.data.mapper.toBusiness
-import com.korlabs.nosht.data.mapper.toBusinessEntity
-import com.korlabs.nosht.data.remote.model.UserSignUp
-import com.korlabs.nosht.domain.model.Table
 import com.korlabs.nosht.domain.model.users.Business
 import com.korlabs.nosht.domain.remote.APIClient
-import com.korlabs.nosht.domain.remote.AuthClient
 import com.korlabs.nosht.util.Resource
-import com.korlabs.nosht.domain.repository.AuthRepository
 import com.korlabs.nosht.data.local.NoshtDatabase
 import com.korlabs.nosht.data.local.entities.ContractEntity
-import com.korlabs.nosht.data.local.entities.MenuEntity
-import com.korlabs.nosht.data.local.entities.MenuResourceCrossRefEntity
-import com.korlabs.nosht.data.local.entities.ResourceEntity
-import com.korlabs.nosht.data.local.entities.TableEntity
 import com.korlabs.nosht.data.mapper.toContract
 import com.korlabs.nosht.data.mapper.toContractEntity
-import com.korlabs.nosht.data.mapper.toEmployer
-import com.korlabs.nosht.data.mapper.toEmployerEntity
-import com.korlabs.nosht.data.mapper.toMenu
-import com.korlabs.nosht.data.mapper.toMenuEntity
-import com.korlabs.nosht.data.mapper.toResourceBusiness
-import com.korlabs.nosht.data.mapper.toResourceEntity
-import com.korlabs.nosht.data.mapper.toTable
-import com.korlabs.nosht.data.mapper.toTableEntity
 import com.korlabs.nosht.data.remote.FirestoreClient
 import com.korlabs.nosht.domain.model.Contract
-import com.korlabs.nosht.domain.model.Menu
-import com.korlabs.nosht.domain.model.ResourceBusiness
-import com.korlabs.nosht.domain.model.enums.TypeUserEnum
 import com.korlabs.nosht.domain.model.enums.employee.EmployerStatusEnum
 import com.korlabs.nosht.domain.model.enums.employee.TypeEmployeeRoleEnum
 import com.korlabs.nosht.domain.model.users.Employer
-import com.korlabs.nosht.domain.model.users.User
 import com.korlabs.nosht.domain.repository.ContractsRepository
 import com.korlabs.nosht.util.Util
 import kotlinx.coroutines.CoroutineScope
@@ -123,10 +101,12 @@ class ContractsRepositoryImpl @Inject constructor(
                         }
 
                         CoroutineScope(Dispatchers.IO).launch {
-                            val localContracts = dao.getContractsByUserId(AuthRepositoryImpl.currentUser!!.uid!!)
+                            val localContracts =
+                                dao.getContractsByUserId(AuthRepositoryImpl.currentUser!!.uid!!)
                             val remoteContractsId = listContracts.map { it.id }
 
-                            val contractsToRemove = localContracts.filter { it.id !in remoteContractsId}
+                            val contractsToRemove =
+                                localContracts.filter { it.id !in remoteContractsId }
 
                             dao.deleteContracts(contractsToRemove)
                             dao.insertContracts(listContracts)
@@ -174,6 +154,20 @@ class ContractsRepositoryImpl @Inject constructor(
         }.catch {
             emit(Resource.Error("Error getting contracts"))
             emit(Resource.Loading(false))
+        }
+    }
+
+    override suspend fun updateStatusBusiness(): Flow<Resource<Boolean>> {
+        return flow {
+            emit(Resource.Loading(true))
+
+            val response = apiClient.updateStatusBusiness(AuthRepositoryImpl.currentUser!!)
+
+            Log.d(Util.TAG, "The new business status is ${response.data}")
+
+            emit(response)
+        }.catch {
+            emit(Resource.Error("Error getting contracts"))
         }
     }
 }

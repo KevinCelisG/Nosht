@@ -134,4 +134,14 @@
     <!-- Dashboard -->
     <string name="message_hello">Hello, %1$s</string>
     <string name="sales_day">Sales of the day</string>
+
+    <!-- Profile -->
+    <string name="profile_title">Profile</string>
+    <string name="close_business">Close the restaurant</string>
+    <string name="open_business">Open the restaurant</string>
+    <string name="preferences">Preferences</string>
+    <string name="help">Help</string>
+    <string name="signOut">Sign out</string>
+    <string name="version_app_message">Version %1$s</string>
+    <string name="employer">Employer</string>
 </resources>

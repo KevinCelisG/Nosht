@@ -12,7 +12,6 @@ import com.korlabs.nosht.domain.model.users.Business
 import com.korlabs.nosht.domain.model.users.Employer
 import com.korlabs.nosht.domain.model.users.User
 import com.korlabs.nosht.util.Resource
-import kotlinx.coroutines.flow.Flow
 
 
 interface APIClient {
@@ -77,6 +76,8 @@ interface APIClient {
     suspend fun listenEmployerResponse(business: Business, code: String)
 
     suspend fun getContracts(user: User)
+
+    suspend fun updateStatusBusiness(currentUser: User): Resource<Boolean>
 
     //suspend fun createGroup(group: Group): Resource<String>
 

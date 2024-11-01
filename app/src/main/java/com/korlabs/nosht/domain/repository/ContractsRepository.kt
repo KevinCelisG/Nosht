@@ -25,4 +25,6 @@ interface ContractsRepository {
     suspend fun getRemoteContracts()
 
     suspend fun getLocalContracts(): Flow<Resource<List<Contract>>>
+
+    suspend fun updateStatusBusiness(): Flow<Resource<Boolean>>
 }

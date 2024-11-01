@@ -35,8 +35,6 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.math.max
-import kotlin.math.min
 
 @Singleton
 class FirestoreClient @Inject constructor() : APIClient {
@@ -722,6 +720,33 @@ class FirestoreClient @Inject constructor() : APIClient {
                     _dataContracts.value = Resource.Successful(listContracts)
                 }
             }
+    }
+
+    override suspend fun updateStatusBusiness(currentUser: User): Resource<Boolean> {
+        return try {
+            if (currentUser.uid != null) {
+                Log.d(Util.TAG, "Starting the change")
+
+                val response = firestore.collection(businessCollection).document(currentUser.uid!!).get().await()
+
+                val isOpen = response.getBoolean("isOpenTheBusiness") ?: false
+                Log.d(Util.TAG, "Current value in remote is $isOpen")
+
+                Log.d(Util.TAG, "Current value to change is ${!isOpen}")
+
+                firestore.collection(businessCollection)
+                    .document(currentUser.uid!!)
+                    .update("isOpenTheBusiness", !isOpen)
+
+                Log.d(Util.TAG, "Finishing the change")
+
+                Resource.Successful(!isOpen)
+            } else {
+                Resource.Error("Does not have UID")
+            }
+        } catch (e: Exception) {
+            Resource.Error(e.message.toString())
+        }
     }
 
 

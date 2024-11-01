@@ -17,12 +17,13 @@ import com.korlabs.nosht.presentation.screens.users.business.admin_home.resource
 import com.korlabs.nosht.presentation.screens.users.business.admin_manage_employers.AdminManageEmployersScreen
 import com.korlabs.nosht.presentation.screens.users.business.admin_manage_employers.EmployersViewModel
 import com.korlabs.nosht.presentation.screens.users.business.admin_manage_money.AdminManageMoneyScreen
-import com.korlabs.nosht.presentation.screens.users.business.admin_profile.AdminProfileScreen
+import com.korlabs.nosht.presentation.screens.users.general.profile.ProfileScreen
 import com.korlabs.nosht.presentation.screens.users.employers.employer_home.EmployerHomeScreen
 import com.korlabs.nosht.presentation.screens.users.employers.waiter.WaiterHomeScreen
 import com.korlabs.nosht.presentation.screens.users.general.contracts.ContractsViewModel
 import com.korlabs.nosht.presentation.screens.users.business.admin_home.menu.MenuScreen
 import com.korlabs.nosht.presentation.screens.users.business.admin_home.menu.MenuViewModel
+import com.korlabs.nosht.presentation.screens.users.general.profile.ProfileViewModel
 import com.korlabs.nosht.presentation.screens.users.general.tables.TablesScreen
 import com.korlabs.nosht.presentation.screens.users.general.tables.TablesViewModel
 import com.korlabs.nosht.presentation.screens.users.general.tables.handleTable.AddItemsTableScreen
@@ -40,6 +41,7 @@ fun NavigationGraph(
     val contractsViewModel: ContractsViewModel = hiltViewModel()
     val resourceViewModel: ResourceViewModel = hiltViewModel()
     val menuViewModel: MenuViewModel = hiltViewModel()
+    val profileViewModel: ProfileViewModel = hiltViewModel()
 
     NavHost(
         navController = navHostController,
@@ -87,7 +89,7 @@ fun NavigationGraph(
         }
 
         composable<Screen.ProfileScreen> {
-            AdminProfileScreen()
+            ProfileScreen(profileViewModel)
         }
 
         composable<Screen.ResourcesScreen> {

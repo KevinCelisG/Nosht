@@ -3,6 +3,10 @@ package com.korlabs.nosht.util
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.korlabs.nosht.NoshtApplication
 import com.korlabs.nosht.domain.model.enums.MenuStatusEnum
 import com.korlabs.nosht.domain.model.enums.TableStatusEnum
@@ -95,6 +99,20 @@ class Util {
             val randomPart = Random.nextInt(100, 999)
 
             return "$timePart$randomPart"
+        }
+
+        @Composable
+        fun heightPercent(percent: Float): Dp {
+            val configuration = LocalConfiguration.current
+            val screenHeight = configuration.screenHeightDp
+            return (screenHeight * percent).dp
+        }
+
+        @Composable
+        fun widthPercent(percent: Float): Dp {
+            val configuration = LocalConfiguration.current
+            val screenWidth = configuration.screenWidthDp
+            return (screenWidth * percent).dp
         }
     }
 }
