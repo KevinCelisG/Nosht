@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -53,6 +54,8 @@ import com.korlabs.nosht.presentation.screens.users.general.contracts.ContractsE
 import com.korlabs.nosht.presentation.screens.users.general.contracts.ContractsViewModel
 import com.korlabs.nosht.presentation.screens.users.general.tables.TablesEvent
 import com.korlabs.nosht.presentation.screens.users.general.tables.TablesViewModel
+import com.korlabs.nosht.presentation.screens.users.general.tables.handleTable.OrdersEvent
+import com.korlabs.nosht.presentation.screens.users.general.tables.handleTable.OrdersViewModel
 import com.korlabs.nosht.util.Util
 
 @Composable
@@ -60,6 +63,7 @@ fun EmployerHomeScreen(
     navHostController: NavHostController,
     //manageEmployersViewModel: EmployersViewModel,
     tablesViewModel: TablesViewModel,
+    ordersViewModel: OrdersViewModel,
     contractsViewModel: ContractsViewModel
 ) {
     val context = LocalContext.current
@@ -125,11 +129,21 @@ fun EmployerHomeScreen(
 
                         Log.d(Util.TAG, "Using the current business uid ${contract.userUid}")
 
-                        if (contract.role == TypeEmployeeRoleEnum.WAITER) {
-                            if (contract.status == EmployerStatusEnum.AVAILABLE) {
+                        if (contract.status == EmployerStatusEnum.AVAILABLE) {
+                            ordersViewModel.onEvent(OrdersEvent.GetRemoteOrders)
+
+                            if (contract.role == TypeEmployeeRoleEnum.WAITER) {
                                 tablesViewModel.onEvent(TablesEvent.GetRemoteTables)
                                 navHostController.navigate(Screen.WaiterScreen)
+                            } else {
+                                navHostController.navigate(Screen.OrdersScreen(true))
                             }
+                        } else {
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.not_available_employer),
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     })
                     Spacer(modifier = Modifier.width(10.dp))
@@ -252,17 +266,23 @@ fun ContractItem(
         colorResource(id = if (contract.status == EmployerStatusEnum.AVAILABLE) R.color.dark_green else R.color.dark_red)
 
     Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween,
+        horizontalAlignment = Alignment.Start,
         modifier = modifier
             .padding(5.dp)
             .fillMaxWidth(0.9f)
-            .fillMaxHeight(0.9f)
+            .fillMaxHeight(0.1f)
             .background(color, shape = RoundedCornerShape(16.dp))
             .clickable {
                 onClick(contract)
             }
     ) {
-        TextSubtitleCustom(subtitle = "${contract.status} - ${contract.userUid}")
+        TextSubtitleCustom(subtitle = "Status: ${contract.status.status}")
+
+        TextSubtitleCustom(subtitle = "Role: ${contract.role.role}")
+
+        TextSubtitleCustom(subtitle = "User: ${contract.userUid}")
+
+        TextSubtitleCustom(subtitle = "DocumentReference: ${contract.documentReference}")
     }
 }

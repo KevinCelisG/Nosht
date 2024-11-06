@@ -22,4 +22,10 @@
 
     <color name="dynamic_menu_color">#4CAF50</color>
     <color name="static_menu_color">#9E9E9E</color>
+
+    <color name="status_pending">#FFC107</color> <!-- Amber 500 -->
+    <color name="status_cooking">#FF9800</color> <!-- Orange 500 -->
+    <color name="status_served">#345335</color> <!-- Green 500 -->
+    <color name="status_ready">#4CAF50</color> <!-- Green 500 -->
+    <color name="status_paid">#2196F3</color> <!-- Blue 500 -->
 </resources>

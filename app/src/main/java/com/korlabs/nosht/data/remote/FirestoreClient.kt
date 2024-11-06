@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.Firebase
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.firestore
 import com.korlabs.nosht.NoshtApplication
@@ -14,10 +15,13 @@ import com.korlabs.nosht.data.mapper.toEmployer
 import com.korlabs.nosht.data.remote.model.UserSignUp
 import com.korlabs.nosht.domain.model.Contract
 import com.korlabs.nosht.domain.model.Menu
+import com.korlabs.nosht.domain.model.MenusWithAmountInOrder
+import com.korlabs.nosht.domain.model.Order
 import com.korlabs.nosht.domain.model.ResourceBusiness
 import com.korlabs.nosht.domain.model.ResourceMovement
 import com.korlabs.nosht.domain.model.ResourceWithAmountInMenu
 import com.korlabs.nosht.domain.model.Table
+import com.korlabs.nosht.domain.model.enums.TableStatusEnum
 import com.korlabs.nosht.domain.model.enums.TypeUserEnum
 import com.korlabs.nosht.domain.model.enums.employee.CodeStatusEnum
 import com.korlabs.nosht.domain.model.enums.employee.EmployerStatusEnum
@@ -33,6 +37,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.time.LocalDate
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -45,6 +50,10 @@ class FirestoreClient @Inject constructor() : APIClient {
 
     private val historyCollection = "History"
     private val tablesCollection = "Tables"
+
+    private val ordersCollection = "Orders"
+    private val itemsOrderCollection = "Items"
+    private val menusOrderCollection = "Menus"
 
     private val resourcesBusinessCollection = "Resources"
     private val resourcesMovementsBusinessCollection = "Movements"
@@ -72,22 +81,28 @@ class FirestoreClient @Inject constructor() : APIClient {
     private val _dataMenus = MutableLiveData<Resource<List<Menu>>>()
     override val dataMenus: LiveData<Resource<List<Menu>>> = _dataMenus
 
+    private val _dataOrders = MutableLiveData<Resource<List<Order>>>()
+    override val dataOrders: LiveData<Resource<List<Order>>> = _dataOrders
+
     companion object {
         var isNewTablesData = false
         var isNewResourcesData = false
         var isNewMenusData = false
         var isNewContractsData = false
+        var isNewOrdersData = false
 
         var tablesListener: ListenerRegistration? = null
         var resourcesListener: ListenerRegistration? = null
         var menusListener: ListenerRegistration? = null
         var contractsListener: ListenerRegistration? = null
+        var ordersListener: ListenerRegistration? = null
 
         fun stopNewData() {
             isNewTablesData = false
             isNewResourcesData = false
             isNewMenusData = false
             isNewContractsData = false
+            isNewOrdersData = false
 
             Log.d(Util.TAG, "Stopped all new data")
         }
@@ -97,6 +112,7 @@ class FirestoreClient @Inject constructor() : APIClient {
             resourcesListener?.remove()
             menusListener?.remove()
             contractsListener?.remove()
+            ordersListener?.remove()
 
             Log.d(Util.TAG, "Stopped all listening")
         }
@@ -727,7 +743,9 @@ class FirestoreClient @Inject constructor() : APIClient {
             if (currentUser.uid != null) {
                 Log.d(Util.TAG, "Starting the change")
 
-                val response = firestore.collection(businessCollection).document(currentUser.uid!!).get().await()
+                val response =
+                    firestore.collection(businessCollection).document(currentUser.uid!!).get()
+                        .await()
 
                 val isOpen = response.getBoolean("isOpenTheBusiness") ?: false
                 Log.d(Util.TAG, "Current value in remote is $isOpen")
@@ -749,6 +767,214 @@ class FirestoreClient @Inject constructor() : APIClient {
         }
     }
 
+    override suspend fun updateStatusOrder(businessUid: String, order: Order): Resource<Boolean> {
+        return try {
+            Log.d(Util.TAG, "Starting the status change for the order")
+
+            firestore.collection(businessCollection)
+                .document(businessUid).collection(ordersCollection)
+                .document(order.documentReference!!)
+                .update("status", order.status.status)
+
+            Log.d(Util.TAG, "Finishing the change for the order")
+
+            Resource.Successful(true)
+        } catch (e: Exception) {
+            Resource.Error(e.message.toString())
+        }
+    }
+
+    override suspend fun addOrder(businessUid: String, order: Order): Resource<Order> {
+        return try {
+            run {
+                // TO DO - Create like a payOrder or closeOrder and add a payMethod
+
+                val orderData = hashMapOf(
+                    "idTable" to order.idTable,
+                    "idWaiter" to order.idWaiter,
+                    "status" to order.status.status,
+                    "date" to order.date.toString(),
+                    "total" to order.total,
+                    "idChef" to order.idChef
+                )
+
+                Log.d(Util.TAG, "Order data $orderData")
+
+                val response = firestore.collection(businessCollection)
+                    .document(businessUid)
+                    .collection(ordersCollection)
+                    .add(orderData).await()
+
+                order.documentReference = response.id
+
+                for (resource in order.resourcesAdditional) {
+                    val resourceData = hashMapOf(
+                        "documentReference" to resource.resourceBusiness.documentReference,
+                        "amount" to resource.amount
+                    )
+
+                    firestore.collection(businessCollection)
+                        .document(businessUid)
+                        .collection(ordersCollection).document(order.documentReference!!)
+                        .collection(itemsOrderCollection).add(resourceData).await()
+                }
+
+                for (menu in order.menus) {
+                    val menuData = hashMapOf(
+                        "documentReference" to menu.menu.documentReference,
+                        "amount" to menu.amount.toInt()
+                    )
+
+                    firestore.collection(businessCollection)
+                        .document(businessUid)
+                        .collection(ordersCollection).document(order.documentReference!!)
+                        .collection(menusOrderCollection).add(menuData).await()
+                }
+
+                Log.d(Util.TAG, "Order sent to firestore")
+
+
+                closeTable(businessUid, order.idTable)
+                Resource.Successful(order)
+            }
+        } catch (e: Exception) {
+            Resource.Error(e.message.toString())
+        }
+    }
+
+    private suspend fun closeTable(businessUid: String, idTable: String) {
+        firestore.collection(businessCollection)
+            .document(businessUid)
+            .collection(tablesCollection).document(idTable)
+            .update("status", TableStatusEnum.NOT_AVAILABLE.status).await()
+    }
+
+    override suspend fun getOrders(businessUid: String) {
+        ordersListener = firestore.collection(businessCollection)
+            .document(businessUid)
+            .collection(ordersCollection)
+            .addSnapshotListener { snapshot, _ ->
+                if (snapshot != null) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val listOrders =
+                            snapshot.documents.mapNotNull { parseOrder(it, businessUid) }
+
+                        Log.d(Util.TAG, "LIST ORDER DATA: $listOrders")
+
+                        withContext(Dispatchers.Main) {
+                            isNewOrdersData = true
+                            _dataOrders.value = Resource.Successful(listOrders)
+                        }
+                    }
+                }
+            }
+    }
+
+    private suspend fun parseOrder(document: DocumentSnapshot, businessUid: String): Order? {
+        val date = document.getString("date") ?: return null
+        val idTable = document.getString("idTable") ?: return null
+        val idChef = document.getString("idChef") ?: ""
+        val idWaiter = document.getString("idWaiter") ?: return null
+        val status = Util.getOrderStatusEnum(document.getString("status") ?: "")
+        val total = document.getLong("total") ?: return null
+
+        val resources = getResourcesForOrder(document, businessUid)
+        val menus = getMenusForOrder(document, businessUid)
+
+        return Order(
+            resourcesAdditional = resources,
+            menus = menus,
+            idTable = idTable,
+            idWaiter = idWaiter,
+            status = status,
+            date = LocalDate.parse(date),
+            total = total.toFloat(),
+            comments = "",
+            idChef = idChef,
+            documentReference = document.id
+        ).also { Log.d(Util.TAG, "Order to get: $it") }
+    }
+
+    private suspend fun getResourcesForOrder(
+        orderDocument: DocumentSnapshot,
+        businessUid: String
+    ): List<ResourceWithAmountInMenu> {
+        val resourceSnapshots =
+            orderDocument.reference.collection(itemsOrderCollection).get().await()
+        return resourceSnapshots.documents.mapNotNull { parseResource(it, businessUid) }
+    }
+
+    private suspend fun parseResource(
+        document: DocumentSnapshot,
+        businessUid: String
+    ): ResourceWithAmountInMenu? {
+        val documentReference = document.getString("documentReference") ?: return null
+        val amount = document.getLong("amount")?.toFloat() ?: return null
+
+        val resourceSnapshot = firestore.collection(businessCollection)
+            .document(businessUid)
+            .collection(resourcesBusinessCollection)
+            .document(documentReference)
+            .get()
+            .await()
+
+        return ResourceBusiness(
+            name = resourceSnapshot.getString("name") ?: return null,
+            minStock = resourceSnapshot.getLong("minimumStock")?.toShort() ?: return null,
+            maxStock = resourceSnapshot.getLong("maximumStock")?.toShort() ?: return null,
+            price = resourceSnapshot.getDouble("price")?.toFloat() ?: return null,
+            amount = resourceSnapshot.getDouble("amount")?.toFloat() ?: return null,
+            typeResourceEnum = Util.getTypeResource(
+                resourceSnapshot.getString("typeResource") ?: ""
+            ),
+            typeMeasurementEnum = Util.getTypeMeasurement(
+                resourceSnapshot.getString("typeMeasurement") ?: ""
+            ),
+            documentReference = resourceSnapshot.id
+        ).let { ResourceWithAmountInMenu(it, amount) }
+    }
+
+    private suspend fun getMenusForOrder(
+        orderDocument: DocumentSnapshot,
+        businessUid: String
+    ): List<MenusWithAmountInOrder> {
+        val menuSnapshots = orderDocument.reference.collection(menusOrderCollection).get().await()
+        return menuSnapshots.documents.mapNotNull { parseMenu(it, businessUid) }
+    }
+
+    private suspend fun parseMenu(
+        document: DocumentSnapshot,
+        businessUid: String
+    ): MenusWithAmountInOrder? {
+        val amountForMenuInOrder = document.getLong("amount")?.toShort() ?: return null
+        val documentReference = document.getString("documentReference") ?: return null
+
+        val menuSnapshot = firestore.collection(businessCollection)
+            .document(businessUid)
+            .collection(menusCollection)
+            .document(documentReference)
+            .get()
+            .await()
+
+        val name = menuSnapshot.getString("name") ?: return null
+        val price = menuSnapshot.getDouble("price")?.toFloat() ?: return null
+
+        val resources = getResourcesForMenu(menuSnapshot, businessUid)
+
+        return MenusWithAmountInOrder(
+            menu = Menu(name = name, listResourceBusiness = resources, price = price),
+            amount = amountForMenuInOrder
+        )
+    }
+
+    private suspend fun getResourcesForMenu(
+        menuDocument: DocumentSnapshot,
+        businessUid: String
+    ): List<ResourceWithAmountInMenu> {
+        val resourceSnapshots =
+            menuDocument.reference.collection(componentsCollection).get().await()
+        return resourceSnapshots.documents.mapNotNull { parseResource(it, businessUid) }
+    }
 
     /*private fun searchUser(business: Business?): DocumentReference {
         return firestore.collection("Users").document(business?.id ?: "")

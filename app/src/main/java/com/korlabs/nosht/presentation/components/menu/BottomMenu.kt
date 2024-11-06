@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -33,12 +34,12 @@ fun BottomMenu(
         )
 
         NavigationBarItem(
-            selected = currentScreen == Screen.AdminManageMoneyScreen.name,
+            selected = currentScreen == Screen.OrdersScreen().name,
             onClick = {
-                navHostController.navigate(Screen.AdminManageMoneyScreen)
+                navHostController.navigate(Screen.OrdersScreen())
             },
             icon = {
-                Icon(imageVector = Icons.Default.Lock, contentDescription = "Money")
+                Icon(imageVector = Icons.Default.ShoppingCart, contentDescription = "Orders")
             }
         )
 
@@ -49,6 +50,16 @@ fun BottomMenu(
             },
             icon = {
                 Icon(imageVector = Icons.Default.Face, contentDescription = "Employers")
+            }
+        )
+
+        NavigationBarItem(
+            selected = currentScreen == Screen.AdminManageMoneyScreen.name,
+            onClick = {
+                navHostController.navigate(Screen.AdminManageMoneyScreen)
+            },
+            icon = {
+                Icon(imageVector = Icons.Default.Lock, contentDescription = "Reports")
             }
         )
 

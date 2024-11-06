@@ -40,6 +40,9 @@ sealed class Screen(val name: String) {
     @Serializable
     data object TablesScreen : Screen("TablesScreen")
 
+    @Serializable
+    data class OrdersScreen(val isAChef: Boolean = false) : Screen("OrdersScreen")
+
     // Menu
     @Serializable
     data object MenuScreen : Screen("MenuScreen")
@@ -52,7 +55,7 @@ sealed class Screen(val name: String) {
     data object WaiterScreen : Screen("WaiterScreen")
 
     @Serializable
-    data class HandleTableScreen(val tableName: String, val status: String) :
+    data class HandleTableScreen(val tableName: String, val status: String, val id: String) :
         Screen("HandleTableScreen")
 
     @Serializable

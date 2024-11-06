@@ -51,6 +51,8 @@ import com.korlabs.nosht.presentation.screens.users.general.contracts.ContractsE
 import com.korlabs.nosht.presentation.screens.users.general.contracts.ContractsViewModel
 import com.korlabs.nosht.presentation.screens.users.general.tables.TablesEvent
 import com.korlabs.nosht.presentation.screens.users.general.tables.TablesViewModel
+import com.korlabs.nosht.presentation.screens.users.general.tables.handleTable.OrdersEvent
+import com.korlabs.nosht.presentation.screens.users.general.tables.handleTable.OrdersViewModel
 import com.korlabs.nosht.util.Util
 
 @Composable
@@ -60,7 +62,8 @@ fun LoginScreen(
     tablesViewModel: TablesViewModel,
     contractsViewModel: ContractsViewModel,
     resourceViewModel: ResourceViewModel,
-    menuViewModel: MenuViewModel
+    menuViewModel: MenuViewModel,
+    ordersViewModel: OrdersViewModel
 ) {
     val context = LocalContext.current
 
@@ -149,6 +152,7 @@ fun LoginScreen(
                     Log.d(Util.TAG, "Current user ${state.user.typeUserEnum.typeUser}")
 
                     contractsViewModel.onEvent(ContractsEvent.GetRemoteContracts)
+                    ordersViewModel.onEvent(OrdersEvent.GetRemoteOrders)
 
                     if (state.user.typeUserEnum == TypeUserEnum.BUSINESS) {
                         resourceViewModel.onEvent(ResourceEvent.GetRemoteResourceBusiness)

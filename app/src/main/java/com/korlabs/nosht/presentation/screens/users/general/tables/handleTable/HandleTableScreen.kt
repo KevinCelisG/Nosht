@@ -1,8 +1,10 @@
 package com.korlabs.nosht.presentation.screens.users.general.tables.handleTable
 
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -39,33 +41,38 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.korlabs.nosht.R
+import com.korlabs.nosht.data.repository.AuthRepositoryImpl
+import com.korlabs.nosht.domain.model.Order
 import com.korlabs.nosht.domain.model.Table
+import com.korlabs.nosht.domain.model.enums.OrderStatusEnum
 import com.korlabs.nosht.domain.model.enums.TableStatusEnum
 import com.korlabs.nosht.navigation.Screen
 import com.korlabs.nosht.presentation.components.button.ButtonCustom
 import com.korlabs.nosht.presentation.components.column.ColumnCustom
+import com.korlabs.nosht.presentation.components.menu.MenuExtendItem
+import com.korlabs.nosht.presentation.components.menu.MenuExtendItemToShow
+import com.korlabs.nosht.presentation.components.resourcesBusiness.ResourceExtendItemToShow
 import com.korlabs.nosht.presentation.components.tables.TableExtendItem
 import com.korlabs.nosht.presentation.components.text.TextSubtitleCustom
 import com.korlabs.nosht.presentation.components.text.TextTitleCustom
 import com.korlabs.nosht.presentation.components.text_field.TextFieldCustom
 import com.korlabs.nosht.presentation.screens.users.general.tables.TablesViewModel
 import com.korlabs.nosht.util.Util
+import java.time.LocalDate
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HandleTableScreen(
     navHostController: NavHostController,
-    tablesViewModel: TablesViewModel,
+    ordersViewModel: OrdersViewModel,
     args: Screen.HandleTableScreen
 ) {
     val context = LocalContext.current
 
-    val state = tablesViewModel.state
+    val state = ordersViewModel.state
 
-    var showDialog by remember { mutableStateOf(false) }
-    var addTable by remember { mutableStateOf(false) }
-    var processAddTable by remember { mutableStateOf(false) }
-
-    var nameTable by remember { mutableStateOf("") }
+    var addOrder by remember { mutableStateOf(false) }
+    var processAddOrder by remember { mutableStateOf(false) }
 
     val tableName = args.tableName
     val status = args.status
@@ -114,8 +121,18 @@ fun HandleTableScreen(
                     .fillMaxHeight(1f)
                     .padding(5.dp)
             ) {
-                items(state.listTables.size) {
-                    //TableExtendItem((state.listTables[it]))
+                items(ordersViewModel.listMenuItems.size) {
+                    MenuExtendItemToShow(
+                        ordersViewModel.listMenuItems[it].menu,
+                        ordersViewModel.listMenuItems[it].amount
+                    ) {
+                        // TO DO - Show the data of menu
+                    }
+                    Spacer(modifier = Modifier.width(10.dp))
+                }
+
+                items(ordersViewModel.listResourceItems.size) {
+                    ResourceExtendItemToShow(ordersViewModel.listResourceItems[it].resourceBusiness)
                     Spacer(modifier = Modifier.width(10.dp))
                 }
             }
@@ -123,8 +140,7 @@ fun HandleTableScreen(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        ButtonCustom(text = stringResource(id = R.string.add_new_customer)) {
-            //showDialog = true
+        ButtonCustom(text = stringResource(id = R.string.add_at_order)) {
             navHostController.navigate(
                 Screen.AddItemsTableScreen(
                     tableName,
@@ -133,84 +149,80 @@ fun HandleTableScreen(
             )
         }
 
-        if (showDialog) {
-            AlertDialog(
-                onDismissRequest = { },
-                title = {
-                    Text(text = stringResource(id = R.string.add_new_customer), fontSize = 20.sp)
-                },
-                text = {
-                    TextFieldCustom(
-                        value = nameTable,
-                        onValueChange = { nameTable = it },
-                        hint = stringResource(id = R.string.hint_name)
-                    )
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            addTable = true
-                        }
-                    ) {
-                        Text(stringResource(id = R.string.add))
-                    }
-                },
-                dismissButton = {
-                    Button(
-                        onClick = { showDialog = false }
-                    ) {
-                        Text(stringResource(id = R.string.cancel))
-                    }
-                }
-            )
+        Spacer(modifier = Modifier.height(10.dp))
+
+        ButtonCustom(text = stringResource(id = R.string.send_order), isSecondary = true) {
+            addOrder = true
         }
     }
 
-    LaunchedEffect(key1 = addTable, block = {
-        if (addTable) {
-            if (nameTable.isNotBlank()) {
-                //tablesViewModel.onEvent(TablesEvent.Add(Table(nameTable)))
-                processAddTable = true
-            } else {
-                Toast.makeText(
-                    context,
-                    context.getString(R.string.fill_all_fields),
-                    Toast.LENGTH_SHORT
-                ).show()
+    LaunchedEffect(key1 = addOrder, block = {
+        if (addOrder) {
+
+            Log.d(Util.TAG, "Sending order")
+
+            var total = 0f
+
+            for (i in ordersViewModel.listMenuItems) {
+                total += i.amount * i.menu.price
             }
-            addTable = false
+
+            for (i in ordersViewModel.listResourceItems) {
+                total += i.amount * i.resourceBusiness.price
+            }
+
+            // TO DO - Implement comments
+
+            ordersViewModel.onEvent(
+                OrdersEvent.Add(
+                    Order(
+                        ordersViewModel.listResourceItems,
+                        ordersViewModel.listMenuItems,
+                        args.id,
+                        AuthRepositoryImpl.currentUser!!.uid.toString(),
+                        OrderStatusEnum.PENDING,
+                        LocalDate.now(),
+                        total,
+                        ""
+                    )
+                )
+            )
+
+            Log.d(Util.TAG, "Order sent")
+
+            processAddOrder = true
+            addOrder = false
         }
     })
 
-    LaunchedEffect(key1 = state.table, block = {
-        if (processAddTable) {
-            if (state.table != null) {
+    LaunchedEffect(key1 = state.order, block = {
+        if (processAddOrder) {
+            if (state.order != null) {
                 Toast.makeText(
                     context,
-                    context.getString(R.string.table_added_successfully),
+                    context.getString(R.string.order_added_successfully),
                     Toast.LENGTH_SHORT
                 ).show()
             } else {
                 Toast.makeText(
                     context,
-                    context.getString(R.string.error_adding_table),
+                    context.getString(R.string.error_adding_order),
                     Toast.LENGTH_SHORT
                 ).show()
             }
-            showDialog = false
-            processAddTable = false
+            processAddOrder = false
         }
     })
 
-    LaunchedEffect(key1 = state.isNewRemoteTables) {
-        if (state.isNewRemoteTables) {
+    LaunchedEffect(key1 = state.isNewRemoteOrders) {
+        if (state.isNewRemoteOrders) {
             Log.d(Util.TAG, "There are a new remote data")
-            //tablesViewModel.onEvent(TablesEvent.GetLocalTables)
+            ordersViewModel.onEvent(OrdersEvent.GetLocalOrders)
         }
     }
 
     LaunchedEffect(Unit) {
-        //tablesViewModel.onEvent(TablesEvent.GetLocalTables)
+        ordersViewModel.onEvent(OrdersEvent.GetLocalOrders)
     }
 
     BackHandler {

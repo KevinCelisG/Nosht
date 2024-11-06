@@ -9,6 +9,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.korlabs.nosht.NoshtApplication
 import com.korlabs.nosht.domain.model.enums.MenuStatusEnum
+import com.korlabs.nosht.domain.model.enums.OrderStatusEnum
 import com.korlabs.nosht.domain.model.enums.TableStatusEnum
 import com.korlabs.nosht.domain.model.enums.TypeMeasurementEnum
 import com.korlabs.nosht.domain.model.enums.TypeResourceEnum
@@ -86,6 +87,17 @@ class Util {
                 MenuStatusEnum.AVAILABLE.status -> MenuStatusEnum.AVAILABLE
                 MenuStatusEnum.NOT_AVAILABLE.status -> MenuStatusEnum.NOT_AVAILABLE
                 else -> MenuStatusEnum.AVAILABLE
+            }
+        }
+
+        fun getOrderStatusEnum(status: String): OrderStatusEnum {
+            return when (status) {
+                OrderStatusEnum.PENDING.status -> OrderStatusEnum.PENDING
+                OrderStatusEnum.PAID.status -> OrderStatusEnum.PAID
+                OrderStatusEnum.SERVED.status -> OrderStatusEnum.SERVED
+                OrderStatusEnum.READY.status -> OrderStatusEnum.READY
+                OrderStatusEnum.COOKING.status -> OrderStatusEnum.COOKING
+                else -> OrderStatusEnum.PENDING
             }
         }
 

@@ -4,12 +4,10 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,6 +15,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -24,15 +23,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -40,29 +39,33 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.korlabs.nosht.R
+import com.korlabs.nosht.domain.model.Menu
+import com.korlabs.nosht.domain.model.MenusWithAmountInOrder
+import com.korlabs.nosht.domain.model.ResourceWithAmountInMenu
+import com.korlabs.nosht.domain.model.enums.MenuStatusEnum
 import com.korlabs.nosht.domain.model.enums.TypeResourceEnum
 import com.korlabs.nosht.domain.model.enums.TypeTableItemsEnum
 import com.korlabs.nosht.navigation.Screen
 import com.korlabs.nosht.presentation.components.column.ColumnCustom
 import com.korlabs.nosht.presentation.components.menu.MenuExtendItem
+import com.korlabs.nosht.presentation.components.menu.MenuExtendItemToAddOrder
 import com.korlabs.nosht.presentation.components.resourcesBusiness.ResourceExtendItem
-import com.korlabs.nosht.presentation.components.resourcesBusiness.ResourceItem
+import com.korlabs.nosht.presentation.components.resourcesBusiness.ResourceExtendItemToAddMenu
+import com.korlabs.nosht.presentation.components.resourcesBusiness.ResourceExtendItemToShow
 import com.korlabs.nosht.presentation.components.tables.TypeTableItem
 import com.korlabs.nosht.presentation.components.text.TextButtonCustom
-import com.korlabs.nosht.presentation.components.text.TextSubtitleCustom
 import com.korlabs.nosht.presentation.screens.users.business.admin_home.menu.MenuEvent
 import com.korlabs.nosht.presentation.screens.users.business.admin_home.menu.MenuViewModel
 import com.korlabs.nosht.presentation.screens.users.business.admin_home.resources.ResourceEvent
 import com.korlabs.nosht.presentation.screens.users.business.admin_home.resources.ResourceViewModel
-import com.korlabs.nosht.presentation.screens.users.general.tables.TablesViewModel
 import com.korlabs.nosht.util.Util
 
 @Composable
 fun AddItemsTableScreen(
     navHostController: NavHostController,
-    tablesViewModel: TablesViewModel,
     menuViewModel: MenuViewModel,
     resourceViewModel: ResourceViewModel,
+    ordersViewModel: OrdersViewModel,
     args: Screen.AddItemsTableScreen
 ) {
     val context = LocalContext.current
@@ -70,7 +73,7 @@ fun AddItemsTableScreen(
     val menuState = menuViewModel.state
     val resourceState = resourceViewModel.state
 
-    var showDialog by remember { mutableStateOf(false) }
+    var showDialogAdd by remember { mutableStateOf(false) }
     var addTable by remember { mutableStateOf(false) }
     var processAddTable by remember { mutableStateOf(false) }
 
@@ -79,7 +82,17 @@ fun AddItemsTableScreen(
     val tableName = args.tableName
     val status = args.status
 
+    var showDialogMenu by remember { mutableStateOf(false) }
+
+    var createOrder by remember { mutableStateOf(false) }
+    var amount by remember { mutableFloatStateOf(0f) }
+
+    var currentMenu: Menu? by remember { mutableStateOf(null) }
+    var currentMenuToAdd: Menu? by remember { mutableStateOf(null) }
+
     var selectedTypeTableItem by rememberSaveable { mutableStateOf(TypeTableItemsEnum.ALL) }
+    val listMenusSelected = remember { mutableStateListOf<MenusWithAmountInOrder>() }
+    val listResourcesSelected = remember { mutableStateListOf<ResourceWithAmountInMenu>() }
 
     val listTypeTableItemEnum = listOf(
         TypeTableItemsEnum.ALL,
@@ -122,10 +135,11 @@ fun AddItemsTableScreen(
                 items(listTypeTableItemEnum.size) {
                     TypeTableItem(
                         listTypeTableItemEnum[it],
-                        listTypeTableItemEnum[it] == selectedTypeTableItem
-                    ) { tableItem ->
-                        selectedTypeTableItem = tableItem
-                    }
+                        listTypeTableItemEnum[it] == selectedTypeTableItem,
+                        { tableItem ->
+                            selectedTypeTableItem = tableItem
+                        }, true
+                    )
                     Spacer(modifier = Modifier.width(10.dp))
                 }
             }
@@ -139,33 +153,90 @@ fun AddItemsTableScreen(
             ) {
                 when (selectedTypeTableItem) {
                     TypeTableItemsEnum.ALL -> {
-                        items(menuState.listMenus.size) {
-                            MenuExtendItem(
-                                menuState.listMenus[it]
-                            ) { /*table ->
-                            navHostController.navigate(
-                                Screen.HandleTableScreen(
-                                    table.name,
-                                    table.status.status
-                                )
-                            )*/
-                            }
+                        items(listMenusSelected.size) {
+                            val currentMenuSelectedInOrderToPaint = listMenusSelected[it]
+                            amount = currentMenuSelectedInOrderToPaint.amount.toFloat()
+
+                            MenuExtendItemToAddOrder(
+                                currentMenuSelectedInOrderToPaint.menu, amount,
+                                { menuSelected ->
+                                    for (i in listMenusSelected) {
+                                        if (i.menu == menuSelected) {
+                                            if (i.menu.menuStatusEnum == MenuStatusEnum.AVAILABLE) {
+                                                i.amount = (i.amount + 1).toShort()
+                                                amount = i.amount.toFloat()
+                                                Log.d(
+                                                    Util.TAG,
+                                                    "Current amount of ${i.menu.name}: $amount"
+                                                )
+                                            } else {
+                                                Toast.makeText(
+                                                    context,
+                                                    "Ya no hay más",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+                                        }
+                                    }
+                                }, { menuSelected ->
+                                    for (i in listMenusSelected) {
+                                        if (i.menu == menuSelected) {
+                                            if (i.amount > 0) {
+                                                i.amount = (i.amount - 1).toShort()
+                                                amount = i.amount.toFloat()
+                                                if (amount.toInt() == 0) {
+                                                    listMenusSelected.remove(
+                                                        currentMenuSelectedInOrderToPaint
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+                                })
                             Spacer(modifier = Modifier.width(10.dp))
                         }
-                        items(resourceState.listResourceBusiness.size) {
-                            if (resourceState.listResourceBusiness[it].typeResourceEnum == TypeResourceEnum.COMMERCIAL_PRODUCTS) {
-                                ResourceExtendItem(
-                                    resourceState.listResourceBusiness[it], false
-                                ) { /*table ->
-                            navHostController.navigate(
-                                Screen.HandleTableScreen(
-                                    table.name,
-                                    table.status.status
-                                )
-                            )*/
-                                }
-                                Spacer(modifier = Modifier.width(10.dp))
-                            }
+                        items(listResourcesSelected.size) {
+                            val currentResourceWithAmount = listResourcesSelected[it]
+                            amount = currentResourceWithAmount.amount
+                            ResourceExtendItemToAddMenu(
+                                currentResourceWithAmount.resourceBusiness,
+                                false,
+                                amount,
+                                { resourceBusiness ->
+                                    for (i in listResourcesSelected) {
+                                        if (i.resourceBusiness == resourceBusiness) {
+                                            if (i.amount <= resourceBusiness.amount) {
+                                                i.amount += 1
+                                                amount = i.amount
+                                                Log.d(
+                                                    Util.TAG,
+                                                    "Current amount of ${i.resourceBusiness.name}: $amount"
+                                                )
+                                            } else {
+                                                Toast.makeText(
+                                                    context,
+                                                    "Ya no hay más",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+                                        }
+                                    }
+                                }, { resourceBusiness ->
+                                    for (i in listResourcesSelected) {
+                                        if (i.resourceBusiness == resourceBusiness) {
+                                            if (i.amount > 0) {
+                                                i.amount -= 1
+                                                amount = i.amount
+                                                if (amount.toInt() == 0) {
+                                                    listResourcesSelected.remove(
+                                                        currentResourceWithAmount
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+                                })
+                            Spacer(modifier = Modifier.width(10.dp))
                         }
                     }
 
@@ -174,13 +245,9 @@ fun AddItemsTableScreen(
                             if (menuState.listMenus[it].isDynamic) {
                                 MenuExtendItem(
                                     menuState.listMenus[it]
-                                ) { /*table ->
-                            navHostController.navigate(
-                                Screen.HandleTableScreen(
-                                    table.name,
-                                    table.status.status
-                                )
-                            )*/
+                                ) { menu ->
+                                    currentMenu = menu
+                                    showDialogAdd = true
                                 }
                                 Spacer(modifier = Modifier.width(10.dp))
                             }
@@ -192,13 +259,9 @@ fun AddItemsTableScreen(
                             if (!menuState.listMenus[it].isDynamic) {
                                 MenuExtendItem(
                                     menuState.listMenus[it]
-                                ) { /*table ->
-                            navHostController.navigate(
-                                Screen.HandleTableScreen(
-                                    table.name,
-                                    table.status.status
-                                )
-                            )*/
+                                ) { menu ->
+                                    currentMenu = menu
+                                    showDialogAdd = true
                                 }
                                 Spacer(modifier = Modifier.width(10.dp))
                             }
@@ -207,17 +270,64 @@ fun AddItemsTableScreen(
 
                     TypeTableItemsEnum.COMMERCIAL_PRODUCTS -> {
                         items(resourceState.listResourceBusiness.size) {
-                            if (resourceState.listResourceBusiness[it].typeResourceEnum == TypeResourceEnum.COMMERCIAL_PRODUCTS) {
-                                ResourceExtendItem(
-                                    resourceState.listResourceBusiness[it], false
-                                ) { /*table ->
-                            navHostController.navigate(
-                                Screen.HandleTableScreen(
-                                    table.name,
-                                    table.status.status
-                                )
-                            )*/
-                                }
+                            val currentResource = resourceState.listResourceBusiness[it]
+                            var currentResourceSaved: ResourceWithAmountInMenu? = null
+
+                            if (currentResource.typeResourceEnum == TypeResourceEnum.COMMERCIAL_PRODUCTS) {
+                                ResourceExtendItemToAddMenu(
+                                    currentResource, false, amount,
+                                    { resourceBusiness ->
+                                        var isInList = false
+
+                                        for (i in listResourcesSelected) {
+                                            if (i.resourceBusiness == resourceBusiness) {
+                                                currentResourceSaved = i
+
+                                                if (i.amount <= resourceBusiness.amount) {
+                                                    i.amount += 1
+                                                    amount = i.amount
+                                                    isInList = true
+                                                    Log.d(
+                                                        Util.TAG,
+                                                        "Current amount of ${i.resourceBusiness.name}: $amount"
+                                                    )
+                                                } else {
+                                                    Toast.makeText(
+                                                        context,
+                                                        "Ya no hay más",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                }
+                                            }
+                                        }
+
+                                        if (!isInList) {
+                                            amount = 1f
+
+                                            currentResourceSaved =
+                                                ResourceWithAmountInMenu(resourceBusiness, amount)
+
+                                            listResourcesSelected.add(currentResourceSaved!!)
+                                            Log.d(
+                                                Util.TAG,
+                                                "Current amount of ${resourceBusiness.name}: 1"
+                                            )
+                                        }
+                                    }, { resourceBusiness ->
+                                        for (i in listResourcesSelected) {
+                                            if (i.resourceBusiness == resourceBusiness) {
+                                                if (i.amount > 0) {
+                                                    i.amount -= 1
+                                                    amount = i.amount
+                                                    if (amount.toInt() == 0) {
+                                                        listResourcesSelected.remove(
+                                                            currentResourceSaved
+                                                        )
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    })
                                 Spacer(modifier = Modifier.width(10.dp))
                             }
                         }
@@ -233,7 +343,9 @@ fun AddItemsTableScreen(
                 .fillMaxWidth()
         ) {
             Button(
-                onClick = {},
+                onClick = {
+                    navHostController.navigateUp()
+                },
                 modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.secondary),
                 shape = RoundedCornerShape(20.dp)
@@ -244,13 +356,135 @@ fun AddItemsTableScreen(
             Spacer(modifier = Modifier.width(20.dp))
 
             Button(
-                onClick = {},
+                onClick = {
+                    ordersViewModel.onEvent(
+                        OrdersEvent.UpdateItemsToAddAtOrder(
+                            listMenusSelected,
+                            listResourcesSelected
+                        )
+                    )
+                    Log.d(Util.TAG, "Menus to set $listMenusSelected")
+                    Log.d(Util.TAG, "Resources to set $listResourcesSelected")
+                    navHostController.navigateUp()
+                },
                 modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
                 shape = RoundedCornerShape(20.dp)
             ) {
                 TextButtonCustom(subtitle = stringResource(R.string.confirm), isSecondary = false)
             }
+        }
+
+        if (showDialogAdd) {
+            AlertDialog(
+                onDismissRequest = { },
+                title = {
+                    Text(text = stringResource(id = R.string.add_menu), fontSize = 20.sp)
+                },
+                text = {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(0.8f)
+                            .padding(5.dp)
+                            .background(
+                                MaterialTheme.colorScheme.surface,
+                                shape = RoundedCornerShape(10.dp)
+                            )
+                    ) {
+                        LazyColumn(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight(1f)
+                                .padding(5.dp)
+                        ) {
+                            if (!currentMenu!!.isDynamic) {
+                                currentMenuToAdd = currentMenu!!
+                                items(currentMenu!!.listResourceBusiness.sortedBy { it.resourceBusiness.typeResourceEnum }.size) {
+                                    ResourceExtendItemToShow(resourceBusiness = currentMenu!!.listResourceBusiness[it].resourceBusiness)
+                                    Spacer(modifier = Modifier.width(10.dp))
+                                }
+                            } else {
+                                val listResourceItemsSelected =
+                                    mutableStateListOf<ResourceWithAmountInMenu>()
+                                items(currentMenu!!.listResourceBusiness.sortedBy { it.resourceBusiness.typeResourceEnum }.size) {
+                                    val currentResourceBusiness =
+                                        currentMenu!!.listResourceBusiness[it]
+                                    ResourceExtendItem(
+                                        currentResourceBusiness.resourceBusiness,
+                                        listResourceItemsSelected.any { item ->
+                                            item.resourceBusiness == currentResourceBusiness.resourceBusiness
+                                        }
+                                    ) { resourceBusiness ->
+                                        if (!listResourceItemsSelected.any { item -> item.resourceBusiness == resourceBusiness }) {
+                                            if (listResourceItemsSelected.any { item -> item.resourceBusiness.typeResourceEnum == resourceBusiness.typeResourceEnum }) {
+                                                Toast.makeText(
+                                                    context,
+                                                    context.getString(R.string.order_add_menu_limit),
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            } else {
+                                                listResourceItemsSelected.add(
+                                                    currentResourceBusiness
+                                                )
+                                            }
+                                        } else {
+                                            listResourceItemsSelected.removeAll { item -> item.resourceBusiness == resourceBusiness }
+                                        }
+                                    }
+                                    Spacer(modifier = Modifier.width(10.dp))
+                                }
+                                currentMenuToAdd = Menu(
+                                    name = currentMenu!!.name,
+                                    listResourceItemsSelected,
+                                    menuStatusEnum = currentMenu!!.menuStatusEnum,
+                                    price = currentMenu!!.price,
+                                    isDynamic = false,
+                                    documentReference = currentMenu!!.documentReference
+                                )
+                            }
+                        }
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            amount = 1f
+
+                            val menuToAdd = MenusWithAmountInOrder(
+                                currentMenuToAdd!!,
+                                amount.toInt().toShort()
+                            )
+
+                            listMenusSelected.add(menuToAdd)
+
+                            showDialogAdd = false
+                        },
+                        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
+                        shape = RoundedCornerShape(20.dp)
+                    ) {
+                        TextButtonCustom(
+                            subtitle = stringResource(R.string.add_menu),
+                            isSecondary = false
+                        )
+                    }
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            showDialogAdd = false
+                        },
+                        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.secondary),
+                        shape = RoundedCornerShape(20.dp)
+                    ) {
+                        TextButtonCustom(
+                            subtitle = stringResource(id = R.string.cancel),
+                            isSecondary = true
+                        )
+                    }
+                }
+            )
         }
     }
 

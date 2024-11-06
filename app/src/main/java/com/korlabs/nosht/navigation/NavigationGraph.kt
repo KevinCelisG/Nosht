@@ -1,5 +1,7 @@
 package com.korlabs.nosht.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -23,13 +25,16 @@ import com.korlabs.nosht.presentation.screens.users.employers.waiter.WaiterHomeS
 import com.korlabs.nosht.presentation.screens.users.general.contracts.ContractsViewModel
 import com.korlabs.nosht.presentation.screens.users.business.admin_home.menu.MenuScreen
 import com.korlabs.nosht.presentation.screens.users.business.admin_home.menu.MenuViewModel
+import com.korlabs.nosht.presentation.screens.users.general.orders.OrdersScreen
 import com.korlabs.nosht.presentation.screens.users.general.profile.ProfileViewModel
 import com.korlabs.nosht.presentation.screens.users.general.tables.TablesScreen
 import com.korlabs.nosht.presentation.screens.users.general.tables.TablesViewModel
 import com.korlabs.nosht.presentation.screens.users.general.tables.handleTable.AddItemsTableScreen
 import com.korlabs.nosht.presentation.screens.users.general.tables.handleTable.HandleTableScreen
+import com.korlabs.nosht.presentation.screens.users.general.tables.handleTable.OrdersViewModel
 import com.korlabs.nosht.presentation.screens.users.general.timer.TimerViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavigationGraph(
     navHostController: NavHostController
@@ -42,6 +47,7 @@ fun NavigationGraph(
     val resourceViewModel: ResourceViewModel = hiltViewModel()
     val menuViewModel: MenuViewModel = hiltViewModel()
     val profileViewModel: ProfileViewModel = hiltViewModel()
+    val ordersViewModel: OrdersViewModel = hiltViewModel()
 
     NavHost(
         navController = navHostController,
@@ -55,7 +61,8 @@ fun NavigationGraph(
                 tablesViewModel,
                 contractsViewModel,
                 resourceViewModel,
-                menuViewModel
+                menuViewModel,
+                ordersViewModel
             )
         }
 
@@ -66,7 +73,8 @@ fun NavigationGraph(
                 tablesViewModel,
                 contractsViewModel,
                 resourceViewModel,
-                menuViewModel
+                menuViewModel,
+                ordersViewModel
             )
         }
 
@@ -105,6 +113,7 @@ fun NavigationGraph(
             EmployerHomeScreen(
                 navHostController,
                 tablesViewModel,
+                ordersViewModel,
                 contractsViewModel
             )
         }
@@ -116,18 +125,23 @@ fun NavigationGraph(
 
         composable<Screen.HandleTableScreen> {
             val args = it.toRoute<Screen.HandleTableScreen>()
-            HandleTableScreen(navHostController, tablesViewModel, args)
+            HandleTableScreen(navHostController, ordersViewModel, args)
         }
 
         composable<Screen.AddItemsTableScreen> {
             val args = it.toRoute<Screen.AddItemsTableScreen>()
             AddItemsTableScreen(
                 navHostController,
-                tablesViewModel,
                 menuViewModel,
                 resourceViewModel,
+                ordersViewModel,
                 args
             )
+        }
+
+        composable<Screen.OrdersScreen> {
+            val args = it.toRoute<Screen.OrdersScreen>()
+            OrdersScreen(navHostController, ordersViewModel, args)
         }
 
         composable<Screen.MenuScreen> {

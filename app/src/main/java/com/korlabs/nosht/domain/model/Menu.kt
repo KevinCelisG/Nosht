@@ -5,13 +5,18 @@ import com.korlabs.nosht.domain.model.enums.MenuStatusEnum
 data class Menu(
     var name: String,
     var listResourceBusiness: List<ResourceWithAmountInMenu>,
-    var menuStatusEnum: MenuStatusEnum,
+    var menuStatusEnum: MenuStatusEnum = MenuStatusEnum.AVAILABLE,
     var price: Float,
-    var isDynamic: Boolean,
+    var isDynamic: Boolean = false,
     var documentReference: String? = null
 )
 
 data class ResourceWithAmountInMenu(
     val resourceBusiness: ResourceBusiness,
-    val amount: Float
+    var amount: Float
+)
+
+data class MenusWithAmountInOrder(
+    val menu: Menu,
+    var amount: Short
 )

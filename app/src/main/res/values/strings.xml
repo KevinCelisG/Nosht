@@ -41,6 +41,7 @@
     <string name="menu_added_successfully">Menú agregado exitosamente</string>
     <string name="error_adding_menu">Error al agregar el menú</string>
     <string name="static_menu_limit_warning">Es un menú estático, no puedes agregar más de un elemento del mismo tipo</string>
+    <string name="order_add_menu_limit">No puedes agregar más de un elemento del mismo tipo</string>
 
     <!-- Recursos -->
     <string name="resources_title">Recursos</string>
@@ -53,6 +54,7 @@
     <string name="enter_resource_amount_to_add_hint">Ingresa la cantidad a añadir del recurso</string>
     <string name="add_new_resource">Agregar nuevo recurso</string>
     <string name="update_resource">Actualizar recurso</string>
+    <string name="update">Actualizar</string>
     <string name="enter_name_hint">Ingresa nombre del recurso</string>
     <string name="select_type_of_resource">Seleccionar tipo de recurso</string>
     <string name="select_type_of_measurement">Seleccionar tipo de medida</string>
@@ -70,6 +72,7 @@
     <string name="liters_measurement">Litros</string>
     <string name="units_measurement">Unidades</string>
     <string name="only_numbers">Solo numeros</string>
+    <string name="items_selected">Items seleccionados</string>
 
     <string name="resource_name_hint">Nombre</string>
     <string name="resource_price_purchase_hint">Precio</string>
@@ -91,9 +94,17 @@
     <string name="orders_to_table">Pedidos a %1$s</string>
     <string name="items">Artículos</string>
     <string name="add_new_customer">Agregar nuevo cliente</string>
+    <string name="add_at_order">Agregar a la orden</string>
     <string name="table_added_successfully">Mesa agregada exitosamente</string>
+    <string name="order_added_successfully">Orden agregada exitosamente</string>
     <string name="error_adding_table">Error al agregar mesa</string>
+    <string name="error_adding_order">Error al agregar orden</string>
     <string name="add_new_table">Agregar nueva mesa</string>
+    <string name="send_order">Enviar la orden</string>
+    <string name="pending_order">Esperando</string>
+    <string name="cooking_order">Cocinando</string>
+    <string name="served_order">Servida</string>
+    <string name="paid_order">Pagada</string>
 
     <!-- Admin Home -->
     <string name="dashboard_title">Dashboard</string>
@@ -143,4 +154,10 @@
     <string name="signOut">Cerrar sesión</string>
     <string name="version_app_message">Versión %1$s</string>
     <string name="employer">Colaborador</string>
+
+    <!-- Profile -->
+    <string name="orders_title">Pedidos</string>
+    <string name="error_updating_status_order">Error al actualizar el estado</string>
+    <string name="not_available_employer">No estás habilitado en este negocio</string>
+    <string name="do_not_able_to_update_from_cooking_to_ready">Solo el chef y el administrador pueden hacer este cambio</string>
 </resources>

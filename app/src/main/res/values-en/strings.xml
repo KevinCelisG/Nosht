@@ -42,6 +42,7 @@
     <string name="menu_added_successfully">Menu added successfully</string>
     <string name="error_adding_menu">Error adding menu</string>
     <string name="static_menu_limit_warning">It is a static menu, you cannot add more than one item of the same type</string>
+    <string name="order_add_menu_limit">You cannot add more than one item of the same type</string>
 
     <!-- Resources -->
     <string name="resources_title">Resources</string>
@@ -54,6 +55,7 @@
     <string name="enter_resource_amount_to_add_hint">Enter the amount of resources to add</string>
     <string name="add_new_resource">Add new resource</string>
     <string name="update_resource">Update resource</string>
+    <string name="update">Update</string>
     <string name="enter_name_hint">Enter resource name</string>
     <string name="select_type_of_resource">Select resource type</string>
     <string name="select_type_of_measurement">Select measurement type</string>
@@ -71,6 +73,7 @@
     <string name="liters_measurement">Liters</string>
     <string name="units_measurement">Unities</string>
     <string name="only_numbers">Only numbers</string>
+    <string name="items_selected">Items selected</string>
 
     <string name="resource_name_hint">Name</string>
     <string name="resource_price_purchase_hint">Price</string>
@@ -92,9 +95,17 @@
     <string name="orders_to_table">Orders to %1$s</string>
     <string name="items">Items</string>
     <string name="add_new_customer">Add new customer</string>
+    <string name="add_at_order">Add at order</string>
     <string name="table_added_successfully">Table added successfully</string>
+    <string name="order_added_successfully">Order added successfully</string>
     <string name="error_adding_table">Error adding table</string>
+    <string name="error_adding_order">Error adding order</string>
     <string name="add_new_table">Add new table</string>
+    <string name="send_order">Send oder</string>
+    <string name="pending_order">Pending</string>
+    <string name="cooking_order">Cooking</string>
+    <string name="served_order">Served</string>
+    <string name="paid_order">Paid</string>
 
     <!-- Admin Home -->
     <string name="dashboard_title">Dashboard</string>
@@ -144,4 +155,10 @@
     <string name="signOut">Sign out</string>
     <string name="version_app_message">Version %1$s</string>
     <string name="employer">Employer</string>
+
+    <!-- Profile -->
+    <string name="orders_title">Orders</string>
+    <string name="error_updating_status_order">Error updating status</string>
+    <string name="not_available_employer">You are not available in this business</string>
+    <string name="do_not_able_to_update_from_cooking_to_ready">Only the chef and admin can do this change</string>
 </resources>

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import com.korlabs.nosht.data.remote.model.UserSignUp
 import com.korlabs.nosht.domain.model.Contract
 import com.korlabs.nosht.domain.model.Menu
+import com.korlabs.nosht.domain.model.Order
 import com.korlabs.nosht.domain.model.ResourceBusiness
 import com.korlabs.nosht.domain.model.ResourceMovement
 import com.korlabs.nosht.domain.model.Table
@@ -20,6 +21,7 @@ interface APIClient {
     val dataContracts: LiveData<Resource<List<Contract>>>
     val dataResourcesBusiness: LiveData<Resource<List<ResourceBusiness>>>
     val dataMenus: LiveData<Resource<List<Menu>>>
+    val dataOrders: LiveData<Resource<List<Order>>>
 
     val isJoinEmployer: LiveData<Resource<String>>
 
@@ -82,4 +84,11 @@ interface APIClient {
     //suspend fun createGroup(group: Group): Resource<String>
 
     //suspend fun getGroups(business: Business): Resource<List<Group>>
+
+    // Orders
+    suspend fun addOrder(businessUid: String, order: Order): Resource<Order>
+
+    suspend fun getOrders(businessUid: String)
+
+    suspend fun updateStatusOrder(businessUid: String, order: Order): Resource<Boolean>
 }

@@ -112,7 +112,8 @@ fun TablesScreen(
                         navHostController.navigate(
                             Screen.HandleTableScreen(
                                 table.name,
-                                table.status.status
+                                table.status.status,
+                                table.documentReference!!
                             )
                         )
                     })

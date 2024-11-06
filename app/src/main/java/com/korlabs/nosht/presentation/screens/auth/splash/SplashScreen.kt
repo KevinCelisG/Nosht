@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.korlabs.nosht.R
+import com.korlabs.nosht.domain.model.enums.OrderStatusEnum
 import com.korlabs.nosht.domain.model.enums.TypeUserEnum
 import com.korlabs.nosht.navigation.Screen
 import com.korlabs.nosht.presentation.components.text.TextTitleCustom
@@ -37,6 +38,8 @@ import com.korlabs.nosht.presentation.screens.users.general.contracts.ContractsE
 import com.korlabs.nosht.presentation.screens.users.general.contracts.ContractsViewModel
 import com.korlabs.nosht.presentation.screens.users.general.tables.TablesEvent
 import com.korlabs.nosht.presentation.screens.users.general.tables.TablesViewModel
+import com.korlabs.nosht.presentation.screens.users.general.tables.handleTable.OrdersEvent
+import com.korlabs.nosht.presentation.screens.users.general.tables.handleTable.OrdersViewModel
 import com.korlabs.nosht.util.Util
 import kotlinx.coroutines.delay
 
@@ -47,7 +50,8 @@ fun SplashScreen(
     tablesViewModel: TablesViewModel,
     contractsViewModel: ContractsViewModel,
     resourceViewModel: ResourceViewModel,
-    menuViewModel: MenuViewModel
+    menuViewModel: MenuViewModel,
+    ordersViewModel: OrdersViewModel,
 ) {
     val state = loginViewModel.state
 
@@ -76,6 +80,7 @@ fun SplashScreen(
                 Log.d(Util.TAG, "Is logged")
 
                 contractsViewModel.onEvent(ContractsEvent.GetRemoteContracts)
+                ordersViewModel.onEvent(OrdersEvent.GetRemoteOrders)
 
                 if (state.user!!.typeUserEnum == TypeUserEnum.BUSINESS) {
                     resourceViewModel.onEvent(ResourceEvent.GetRemoteResourceBusiness)
