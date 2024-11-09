@@ -43,6 +43,9 @@
     <string name="error_adding_menu">Error adding menu</string>
     <string name="static_menu_limit_warning">It is a static menu, you cannot add more than one item of the same type</string>
     <string name="order_add_menu_limit">You cannot add more than one item of the same type</string>
+    <string name="news">News</string>
+    <string name="newsTest">You have to update your application through PlayStore before the next week or you wont be able to access to the application</string>
+    <string name="features">Features</string>
 
     <!-- Resources -->
     <string name="resources_title">Resources</string>
@@ -145,6 +148,15 @@
     <!-- Dashboard -->
     <string name="message_hello">Hello, %1$s</string>
     <string name="sales_day">Sales of the day</string>
+    <string name="sales_today">Sales today</string>
+    <string name="sales_yesterday">Sales yesterday</string>
+    <string name="sales_last_week">Sales last week</string>
+    <string name="sales_last_month">Sales last month</string>
+    <string name="best_waiter">Best waiter</string>
+    <string name="best_menu">Best menu</string>
+    <string name="best_resource">Best resource</string>
+    <string name="total_orders">Total orders</string>
+    <string name="total_revenue">Total revenue</string>
 
     <!-- Profile -->
     <string name="profile_title">Profile</string>
@@ -156,9 +168,13 @@
     <string name="version_app_message">Version %1$s</string>
     <string name="employer">Employer</string>
 
-    <!-- Profile -->
+    <!-- Orders -->
     <string name="orders_title">Orders</string>
     <string name="error_updating_status_order">Error updating status</string>
     <string name="not_available_employer">You are not available in this business</string>
     <string name="do_not_able_to_update_from_cooking_to_ready">Only the chef and admin can do this change</string>
+
+    <!-- Reports -->
+    <string name="reports_title">Reports</string>
+    <string name="home_title">Home</string>
 </resources>

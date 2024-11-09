@@ -59,6 +59,7 @@ import com.korlabs.nosht.domain.model.enums.employee.TypeEmployeeRoleEnum
 import com.korlabs.nosht.navigation.Screen
 import com.korlabs.nosht.presentation.components.button.ButtonCustom
 import com.korlabs.nosht.presentation.components.column.ColumnCustom
+import com.korlabs.nosht.presentation.components.header.HeaderComponent
 import com.korlabs.nosht.presentation.components.text.TextTitleCustom
 import com.korlabs.nosht.presentation.components.text_field.TextFieldCustom
 import com.korlabs.nosht.presentation.screens.users.employers.employer_home.ContractItem
@@ -98,17 +99,7 @@ fun AdminManageEmployersScreen(
     var listenEmployerResponse by rememberSaveable { mutableStateOf(false) }
 
     ColumnCustom {
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Text(
-            text = stringResource(id = R.string.employers_title),
-            fontSize = 24.sp,
-            textAlign = TextAlign.Start,
-            modifier = Modifier
-                .fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
+        HeaderComponent(navHostController, stringResource(R.string.employers_title))
 
         Column(
             modifier = Modifier

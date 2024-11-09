@@ -25,7 +25,7 @@ sealed class Screen(val name: String) {
     data object AdminHomeScreen : Screen("AdminHomeScreen")
 
     @Serializable
-    data object AdminManageMoneyScreen : Screen("AdminManageMoneyScreen")
+    data object ReportsScreen : Screen("ReportsScreen")
 
     @Serializable
     data object AdminManageEmployersScreen : Screen("AdminManageEmployersScreen")

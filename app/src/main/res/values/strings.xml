@@ -42,6 +42,9 @@
     <string name="error_adding_menu">Error al agregar el menú</string>
     <string name="static_menu_limit_warning">Es un menú estático, no puedes agregar más de un elemento del mismo tipo</string>
     <string name="order_add_menu_limit">No puedes agregar más de un elemento del mismo tipo</string>
+    <string name="news">Noticias</string>
+    <string name="newsTest">Tienes que actualizar tu aplicacion desde la google play antes de la siguiente semana o no podra ingresar a la aplicacion</string>
+    <string name="features">Funcionalidades</string>
 
     <!-- Recursos -->
     <string name="resources_title">Recursos</string>
@@ -124,7 +127,7 @@
     <string name="employer_taken_error">Empleado ya tomado, pero hay un error. Raro :(</string>
 
     <!-- Contracts Screen -->
-    <string name="contracts_title">Contracts</string>
+    <string name="contracts_title">Contratos</string>
     <string name="enter_contract">Ingresa contrato</string>
     <string name="join_to_business">Unirse a un negocio</string>
     <string name="join_business_dialog_title">Unirse a un negocio</string>
@@ -143,7 +146,16 @@
 
     <!-- Dashboard -->
     <string name="message_hello">Hola, %1$s</string>
-    <string name="sales_day">Ventas del día</string>
+    <string name="sales_day">Ganancias netas del día</string>
+    <string name="sales_today">Ganancias netas de hoy</string>
+    <string name="sales_yesterday">Ganancias netas de ayer</string>
+    <string name="sales_last_week">Ganancias netas de la ultima semana</string>
+    <string name="sales_last_month">Ganancias netas del ultimo mes</string>
+    <string name="best_waiter">Mejor mesero</string>
+    <string name="best_menu">Mejor menu</string>
+    <string name="best_resource">Mejor recurso</string>
+    <string name="total_orders">Total ordenes</string>
+    <string name="total_revenue">Ganancias brutas</string>
 
     <!-- Profile -->
     <string name="profile_title">Perfil</string>
@@ -155,9 +167,14 @@
     <string name="version_app_message">Versión %1$s</string>
     <string name="employer">Colaborador</string>
 
-    <!-- Profile -->
+    <!-- Orders -->
     <string name="orders_title">Pedidos</string>
     <string name="error_updating_status_order">Error al actualizar el estado</string>
     <string name="not_available_employer">No estás habilitado en este negocio</string>
     <string name="do_not_able_to_update_from_cooking_to_ready">Solo el chef y el administrador pueden hacer este cambio</string>
+
+    <!-- Reports -->
+    <string name="reports_title">Reportes</string>
+
+    <string name="home_title">Home</string>
 </resources>

@@ -23,9 +23,11 @@
     <color name="dynamic_menu_color">#4CAF50</color>
     <color name="static_menu_color">#9E9E9E</color>
 
-    <color name="status_pending">#FFC107</color> <!-- Amber 500 -->
-    <color name="status_cooking">#FF9800</color> <!-- Orange 500 -->
-    <color name="status_served">#345335</color> <!-- Green 500 -->
-    <color name="status_ready">#4CAF50</color> <!-- Green 500 -->
-    <color name="status_paid">#2196F3</color> <!-- Blue 500 -->
+    <color name="status_pending">#FF9A00</color>
+    <color name="status_cooking">#E65100</color>
+    <color name="status_served">#1F3722</color>
+    <color name="status_ready">#388E3C</color>
+    <color name="status_paid">#1565C0</color>
+
+    <color name="item_menu">#FFFFFFFF</color>
 </resources>

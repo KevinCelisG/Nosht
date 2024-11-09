@@ -6,6 +6,8 @@ import com.korlabs.nosht.domain.model.MenusWithAmountInOrder
 import com.korlabs.nosht.domain.model.Order
 import com.korlabs.nosht.domain.model.ResourceWithAmountInMenu
 import com.korlabs.nosht.domain.model.Table
+import com.korlabs.nosht.domain.model.enums.TimeEnum
+import java.time.LocalDate
 
 sealed class OrdersEvent {
     data class Add(val order: Order) : OrdersEvent()
@@ -16,4 +18,6 @@ sealed class OrdersEvent {
         val menusWithAmountInOrder: MutableList<MenusWithAmountInOrder>,
         val resourceWithAmountInMenu: MutableList<ResourceWithAmountInMenu>
     ) : OrdersEvent()
+
+    data class GenerateReport(val timeEnum: TimeEnum = TimeEnum.TODAY) : OrdersEvent()
 }

@@ -1,7 +1,9 @@
 package com.korlabs.nosht.presentation.screens.users.general.tables.handleTable
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -9,13 +11,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.korlabs.nosht.domain.model.MenusWithAmountInOrder
 import com.korlabs.nosht.domain.model.Order
+import com.korlabs.nosht.domain.model.Report
 import com.korlabs.nosht.domain.model.ResourceWithAmountInMenu
 import com.korlabs.nosht.domain.model.enums.OrderStatusEnum
+import com.korlabs.nosht.domain.model.enums.TimeEnum
 import com.korlabs.nosht.domain.repository.OrdersRepository
 import com.korlabs.nosht.util.Resource
 import com.korlabs.nosht.util.Util
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import javax.inject.Inject
 
 @SuppressLint("MutableCollectionMutableState")
@@ -28,6 +33,7 @@ class OrdersViewModel @Inject constructor(
     var listMenuItems by mutableStateOf(mutableListOf<MenusWithAmountInOrder>())
     var listResourceItems by mutableStateOf(mutableListOf<ResourceWithAmountInMenu>())
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun onEvent(ordersEvent: OrdersEvent) {
         when (ordersEvent) {
             is OrdersEvent.Add -> {
@@ -51,6 +57,10 @@ class OrdersViewModel @Inject constructor(
 
             is OrdersEvent.UpdateStatus -> {
                 updateStatusOrder(ordersEvent.order)
+            }
+
+            is OrdersEvent.GenerateReport -> {
+                generateReport(ordersEvent.timeEnum)
             }
         }
     }
@@ -168,5 +178,68 @@ class OrdersViewModel @Inject constructor(
                 }
             }
         }*/
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun generateReport(timeEnum: TimeEnum) {
+        Log.d(Util.TAG, "Start report generation")
+
+        val orders = state.listOrders
+        val currentDate = LocalDate.now()
+
+        if (orders.isNotEmpty()) {
+            // Filtrar órdenes basadas en el rango de tiempo seleccionado
+            val filteredOrders = orders.filter { order ->
+                when (timeEnum) {
+                    TimeEnum.TODAY -> order.date == currentDate && order.status == OrderStatusEnum.PAID
+                    TimeEnum.YESTERDAY -> order.date == currentDate.minusDays(1) && order.status == OrderStatusEnum.PAID
+                    TimeEnum.LAST_WEEK -> order.date.isAfter(currentDate.minusWeeks(1)) && order.date <= currentDate && order.status == OrderStatusEnum.PAID
+                    TimeEnum.LAST_MONTH -> order.date.isAfter(currentDate.minusMonths(1)) && order.date <= currentDate && order.status == OrderStatusEnum.PAID
+                }
+            }
+
+            // Inicializar variables de ganancias y contadores
+            var profit = 0.0f
+            var revenue = 0.0f
+            var totalOrders: Short = 0
+
+            // Calcular ganancias y número de órdenes
+            for (order in filteredOrders) {
+                profit += order.total
+                revenue += order.total
+                totalOrders++
+            }
+
+            // Obtener el mejor mesero
+            val waiterCount = filteredOrders.groupingBy { it.idWaiter }.eachCount()
+            val bestWaiter = waiterCount.maxByOrNull { it.value }
+
+            // Obtener el mejor menú
+            val menuCount = filteredOrders.flatMap { it.menus }
+                .groupingBy { it.menu }
+                .eachCount()
+            val bestMenu = menuCount.maxByOrNull { it.value }
+
+            // Obtener el mejor recurso adicional
+            val resourceCount = filteredOrders.flatMap { it.resourcesAdditional }
+                .groupingBy { it.resourceBusiness }
+                .eachCount()
+            val bestResource = resourceCount.maxByOrNull { it.value }
+
+            // Crear el reporte
+            val report = Report(
+                timeEnum,
+                bestWaiter,
+                bestMenu,
+                bestResource,
+                revenue,
+                profit,
+                totalOrders
+            )
+
+            // Actualizar el estado con el reporte generado
+            Log.d(Util.TAG, "The report is $report")
+            state = state.copy(report = report)
+        }
     }
 }

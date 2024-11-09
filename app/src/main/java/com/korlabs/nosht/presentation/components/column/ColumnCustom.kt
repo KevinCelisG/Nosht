@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.korlabs.nosht.ui.theme.Dimens
+import com.korlabs.nosht.util.Util
 
 @Composable
 fun ColumnCustom(content: @Composable () -> Unit) {
@@ -19,7 +20,7 @@ fun ColumnCustom(content: @Composable () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
-            .padding(Dimens.screenPadding)
+            .padding(Util.widthPercent(percent = 0.05f))
             .background(MaterialTheme.colorScheme.background)
     ) {
         content()

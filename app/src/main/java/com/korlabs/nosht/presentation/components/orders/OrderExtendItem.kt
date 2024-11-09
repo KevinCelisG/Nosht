@@ -4,9 +4,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -46,89 +49,98 @@ fun OrderExtendItem(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .padding(5.dp)
             .fillMaxWidth(1f)
-            .height(100.dp)
+            .height(110.dp)
             .background(colorByType, shape = RoundedCornerShape(15.dp))
+            .padding(15.dp)
             .clickable {
                 onClick(order)
             }
     ) {
-        Text(
-            text = order.status.status,
-            color = Color.White,
-            fontSize = 16.sp,
-            textAlign = TextAlign.Start,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
+        Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp)
-                .clickable {
-                    onClickUpdateStatus(order)
-                }
-        )
+                .weight(1f)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "Table 1",
+                color = Color.White,
+                fontSize = 16.sp,
+                textAlign = TextAlign.Start,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
 
-        Text(
-            text = order.date.toString(),
-            color = Color.White,
-            fontSize = 16.sp,
-            textAlign = TextAlign.Start,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
+            Text(
+                text = order.status.status,
+                color = Color.White,
+                fontSize = 16.sp,
+                textAlign = TextAlign.Start,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier
+                    .clickable {
+                        onClickUpdateStatus(order)
+                    }
+            )
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp)
-        )
+                .weight(1f)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "Mesero: Pedro Castro",
+                color = Color.White,
+                fontSize = 16.sp,
+                textAlign = TextAlign.Start,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
 
-        Text(
-            text = "Table 1",
-            color = Color.White,
-            fontSize = 16.sp,
-            textAlign = TextAlign.Start,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
+            Text(
+                text = "Cocinero: Pablo Snachez",
+                color = Color.White,
+                fontSize = 16.sp,
+                textAlign = TextAlign.Start,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp)
-        )
+                .weight(1f)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = order.date.toString(),
+                color = Color.White,
+                fontSize = 16.sp,
+                textAlign = TextAlign.Start,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
 
-
-        Text(
-            text = "Mesero: Pedro Castro",
-            color = Color.White,
-            fontSize = 16.sp,
-            textAlign = TextAlign.Start,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp)
-        )
-
-        Text(
-            text = "Cocinero: Pablo Snachez",
-            color = Color.White,
-            fontSize = 16.sp,
-            textAlign = TextAlign.Start,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp)
-        )
-
-
-        Text(
-            text = "Total: 34.000",
-            color = Color.White,
-            fontSize = 16.sp,
-            textAlign = TextAlign.Start,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp)
-        )
+            Text(
+                text = "Total: 34.000",
+                color = Color.White,
+                fontSize = 16.sp,
+                textAlign = TextAlign.Start,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
     }
 }

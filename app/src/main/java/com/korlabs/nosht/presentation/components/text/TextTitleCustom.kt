@@ -12,21 +12,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.korlabs.nosht.presentation.components.spacers.SpacerVertical
+import com.korlabs.nosht.ui.theme.Dimens
+import com.korlabs.nosht.util.Util
 
 @Composable
 fun TextTitleCustom(title: String) {
-    Spacer(modifier = Modifier.height(20.dp))
+    SpacerVertical(0.02f)
 
     Text(
         text = title,
-        fontSize = 24.sp,
-        fontWeight = FontWeight.Bold,
+        style = MaterialTheme.typography.titleMedium,
         textAlign = TextAlign.Center,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(20.dp),
+            .height(Util.heightPercent(percent = Dimens.headerHeight)),
         color = MaterialTheme.colorScheme.onBackground
     )
-
-    Spacer(modifier = Modifier.height(20.dp))
 }

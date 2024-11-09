@@ -55,6 +55,7 @@ import com.korlabs.nosht.data.repository.AuthRepositoryImpl
 import com.korlabs.nosht.domain.model.enums.TypeUserEnum
 import com.korlabs.nosht.domain.model.users.Business
 import com.korlabs.nosht.presentation.components.column.ColumnCustom
+import com.korlabs.nosht.presentation.components.spacers.SpacerVertical
 import com.korlabs.nosht.presentation.components.text.TextTitleCustom
 import com.korlabs.nosht.presentation.screens.users.general.tables.TablesViewModel
 import com.korlabs.nosht.ui.theme.Dimens
@@ -76,14 +77,7 @@ fun ProfileScreen(
 
     var openBusiness by rememberSaveable { mutableStateOf(isOpen) }
 
-    Column(
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(Util.widthPercent(percent = 0.05f))
-            .background(MaterialTheme.colorScheme.background)
-    ) {
+    ColumnCustom {
         TextTitleCustom(title = stringResource(id = R.string.profile_title))
 
         Image(
@@ -96,12 +90,24 @@ fun ProfileScreen(
 
         Spacer(modifier = Modifier.height(Util.heightPercent(percent = 0.02f)))
 
-        Text(text = "${currentUser.name} ${currentUser.lastName}", textAlign = TextAlign.Center)
+        Text(
+            text = "${currentUser.name} ${currentUser.lastName}",
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.titleMedium
+        )
 
         if (isABusiness) {
-            Text(text = (currentUser as Business).businessName!!, textAlign = TextAlign.Center)
+            Text(
+                text = (currentUser as Business).businessName!!,
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.titleMedium
+            )
         } else {
-            Text(stringResource(id = R.string.employer), textAlign = TextAlign.Center)
+            Text(
+                stringResource(id = R.string.employer),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.titleMedium
+            )
         }
 
         Spacer(modifier = Modifier.height(Util.heightPercent(percent = 0.1f)))
@@ -130,7 +136,8 @@ fun ProfileScreen(
                 Text(
                     text = if (openBusiness) stringResource(id = R.string.close_business) else stringResource(
                         id = R.string.open_business
-                    )
+                    ),
+                    style = MaterialTheme.typography.titleSmall
                 )
             }
 
@@ -152,7 +159,10 @@ fun ProfileScreen(
 
             Spacer(modifier = Modifier.width(Util.widthPercent(percent = 0.02f)))
 
-            Text(text = stringResource(id = R.string.preferences))
+            Text(
+                text = stringResource(id = R.string.preferences),
+                style = MaterialTheme.typography.titleSmall
+            )
         }
 
         Spacer(modifier = Modifier.height(5.dp))
@@ -172,7 +182,10 @@ fun ProfileScreen(
 
             Spacer(modifier = Modifier.width(Util.widthPercent(percent = 0.02f)))
 
-            Text(text = stringResource(id = R.string.help))
+            Text(
+                text = stringResource(id = R.string.help),
+                style = MaterialTheme.typography.titleSmall
+            )
         }
 
         Spacer(modifier = Modifier.height(Util.heightPercent(percent = 0.02f)))
@@ -199,7 +212,10 @@ fun ProfileScreen(
 
             Spacer(modifier = Modifier.width(Util.widthPercent(percent = 0.02f)))
 
-            Text(text = stringResource(id = R.string.signOut))
+            Text(
+                text = stringResource(id = R.string.signOut),
+                style = MaterialTheme.typography.titleSmall
+            )
         }
 
         Spacer(modifier = Modifier.height(Util.heightPercent(percent = 0.08f)))
@@ -211,8 +227,14 @@ fun ProfileScreen(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = stringResource(id = R.string.app_name))
-            Text(text = stringResource(id = R.string.version_app_message, "1.2.3"))
+            Text(
+                text = stringResource(id = R.string.app_name),
+                style = MaterialTheme.typography.titleSmall
+            )
+            Text(
+                text = stringResource(id = R.string.version_app_message, "1.2.3"),
+                style = MaterialTheme.typography.titleSmall
+            )
         }
     }
 

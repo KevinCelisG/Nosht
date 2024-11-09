@@ -43,7 +43,7 @@ private val LightColorScheme = lightColorScheme(
 fun NoshtTheme(content: @Composable () -> Unit) {
     MaterialTheme(
         colorScheme = if (isSystemInDarkTheme()) DarkColorScheme else LightColorScheme,
-        typography = Typography,
+        typography = CustomTypography,
         content = content
     )
 }

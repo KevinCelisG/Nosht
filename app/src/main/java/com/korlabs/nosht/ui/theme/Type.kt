@@ -32,3 +32,11 @@ val Typography = Typography(
     )
     */
 )
+
+val CustomTypography = Typography(
+    titleLarge = TextStyle(fontSize = 20.sp),
+    titleMedium = TextStyle(fontSize = 18.sp),
+    titleSmall = TextStyle(fontSize = 16.sp),
+    bodyLarge = TextStyle(fontSize = 18.sp),
+    bodySmall = TextStyle(fontSize = 14.sp)
+)

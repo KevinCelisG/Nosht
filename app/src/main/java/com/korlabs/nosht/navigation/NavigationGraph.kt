@@ -18,7 +18,7 @@ import com.korlabs.nosht.presentation.screens.users.business.admin_home.resource
 import com.korlabs.nosht.presentation.screens.users.business.admin_home.resources.ResourcesScreen
 import com.korlabs.nosht.presentation.screens.users.business.admin_manage_employers.AdminManageEmployersScreen
 import com.korlabs.nosht.presentation.screens.users.business.admin_manage_employers.EmployersViewModel
-import com.korlabs.nosht.presentation.screens.users.business.admin_manage_money.AdminManageMoneyScreen
+import com.korlabs.nosht.presentation.screens.users.business.admin_manage_money.ReportsScreen
 import com.korlabs.nosht.presentation.screens.users.general.profile.ProfileScreen
 import com.korlabs.nosht.presentation.screens.users.employers.employer_home.EmployerHomeScreen
 import com.korlabs.nosht.presentation.screens.users.employers.waiter.WaiterHomeScreen
@@ -85,11 +85,17 @@ fun NavigationGraph(
 
         // Admin
         composable<Screen.AdminHomeScreen> {
-            AdminHomeScreen(navHostController, tablesViewModel, resourceViewModel, menuViewModel)
+            AdminHomeScreen(
+                navHostController,
+                tablesViewModel,
+                resourceViewModel,
+                ordersViewModel,
+                menuViewModel
+            )
         }
 
-        composable<Screen.AdminManageMoneyScreen> {
-            AdminManageMoneyScreen()
+        composable<Screen.ReportsScreen> {
+            ReportsScreen(navHostController, ordersViewModel)
         }
 
         composable<Screen.AdminManageEmployersScreen> {

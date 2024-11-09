@@ -1,4 +1,4 @@
-package com.korlabs.nosht.presentation.components.orders
+package com.korlabs.nosht.presentation.components.reports
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -11,19 +11,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.korlabs.nosht.R
-import com.korlabs.nosht.domain.model.enums.OrderStatusEnum
-import com.korlabs.nosht.domain.model.enums.TypeResourceEnum
+import com.korlabs.nosht.domain.model.enums.TimeEnum
 
 @Composable
-fun TypeOrdersItem(
-    orderStatusEnum: OrderStatusEnum,
+fun TimeItem(
+    timeEnum: TimeEnum,
     isSelected: Boolean,
-    onClick: (OrderStatusEnum) -> Unit
+    onClick: (TimeEnum) -> Unit
 ) {
     val color =
         if (isSelected) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.background
@@ -36,11 +33,11 @@ fun TypeOrdersItem(
         ),
         colors = ButtonDefaults.buttonColors(color),
         onClick = {
-            onClick(orderStatusEnum)
+            onClick(timeEnum)
         }
     ) {
         Text(
-            text = orderStatusEnum.status,
+            text = timeEnum.time,
             color = fontColor,
             fontSize = 14.sp,
             textAlign = TextAlign.Center,
